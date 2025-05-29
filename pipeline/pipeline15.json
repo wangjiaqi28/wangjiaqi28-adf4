@@ -1,0 +1,131 @@
+{
+	"name": "pipeline15",
+	"properties": {
+		"activities": [
+			{
+				"name": "SBTIMP0024-pipeline02-azureFunction01",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "convert_fixed_length_to_csv",
+					"body": {
+						"value": "@pipeline().parameters.column_widths",
+						"type": "Expression"
+					},
+					"headers": {
+						"account_name": "20250219mis",
+						"source_file_dir": "miraicontainer01/tmp/CXFT000101",
+						"source_file_name": "CXFT000101",
+						"work_file_dir": "core/CXFT000101",
+						"work_file_name": "CXFT000101_WK.csv"
+					},
+					"method": "POST"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureFunction1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"column_widths": {
+				"type": "string",
+				"defaultValue": {
+					"column_widths": [
+						10,
+						1,
+						16,
+						15,
+						16,
+						35,
+						35,
+						35,
+						35,
+						60,
+						3,
+						35,
+						35,
+						35,
+						80,
+						35,
+						35,
+						35,
+						35,
+						10,
+						16,
+						3,
+						8,
+						4,
+						4,
+						11,
+						11,
+						11,
+						132,
+						10,
+						1,
+						1,
+						1,
+						1,
+						10,
+						2,
+						11,
+						1,
+						1,
+						1,
+						4,
+						16,
+						4,
+						4,
+						4,
+						40,
+						8,
+						10,
+						1,
+						10,
+						8,
+						1,
+						1,
+						6,
+						2,
+						1,
+						5,
+						3,
+						1,
+						10,
+						10,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						8,
+						12,
+						8,
+						12,
+						1,
+						1
+					]
+				}
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-04-15T03:09:22Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

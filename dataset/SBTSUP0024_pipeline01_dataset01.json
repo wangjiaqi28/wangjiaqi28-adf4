@@ -1,0 +1,39 @@
+{
+	"name": "SBTSUP0024_pipeline01_dataset01",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250219",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"core_dir": {
+				"type": "string"
+			},
+			"core_file_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().core_file_name",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().core_dir",
+					"type": "Expression"
+				},
+				"container": "miraicontainer01"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\"",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

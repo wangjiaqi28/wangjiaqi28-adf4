@@ -1,0 +1,9 @@
+{
+	"name": "MISTEST",
+	"location": "japaneast",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e5639d70-c5d5-4a1a-81d2-3b5adceddbe5",
+		"tenantId": "bd11d2bd-18fd-44b7-b4a6-1b218140fd33"
+	}
+}

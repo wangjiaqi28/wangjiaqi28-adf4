@@ -1,0 +1,66 @@
+{
+	"name": "pipeline16",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@pipeline().parameters.time",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "name",
+					"value": {
+						"value": "@concat(pipeline().parameters.foldpath,'/',pipeline().parameters.filename)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"time": {
+				"type": "int",
+				"defaultValue": 2
+			},
+			"filename": {
+				"type": "string"
+			},
+			"foldpath": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"name": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "TEST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-05-08T10:47:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

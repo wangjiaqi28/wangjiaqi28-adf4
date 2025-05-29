@@ -1,0 +1,29 @@
+{
+	"name": "to_storeage_trigger_sup",
+	"properties": {
+		"description": "提供側変換パイプラインを起動するための配置トリガー",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "FIX_TO_STOREGY_02_1-1",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"core_dir": "@trigger().outputs.body.folderPath",
+					"core_file_name": "@trigger().outputs.body.filename"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/output/blobs/core/IFA/",
+			"ignoreEmptyBlobs": false,
+			"scope": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

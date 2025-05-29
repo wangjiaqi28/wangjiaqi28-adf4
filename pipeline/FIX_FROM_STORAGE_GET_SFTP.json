@@ -1,0 +1,111 @@
+{
+	"name": "FIX_FROM_STORAGE_GET_SFTP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Azure Function1",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "get_file_from_sftp",
+					"body": "",
+					"headers": {
+						"sftp_host": {
+							"value": "@pipeline().parameters.sftp_host",
+							"type": "Expression"
+						},
+						"sftp_port": {
+							"value": "@pipeline().parameters.sftp_port",
+							"type": "Expression"
+						},
+						"sftp_username": {
+							"value": "@pipeline().parameters.sftp_username",
+							"type": "Expression"
+						},
+						"sftp_filepath": {
+							"value": "@pipeline().parameters.sftp_filepath",
+							"type": "Expression"
+						},
+						"blob_container": {
+							"value": "@pipeline().parameters.blob_container",
+							"type": "Expression"
+						},
+						"blob_name": {
+							"value": "@pipeline().parameters.blob_name",
+							"type": "Expression"
+						},
+						"key_vault_name": {
+							"value": "@pipeline().parameters.key_vault_name",
+							"type": "Expression"
+						},
+						"secret_name": {
+							"value": "@pipeline().parameters.secret_name",
+							"type": "Expression"
+						},
+						"account_storage_name": {
+							"value": "@pipeline().parameters.account_storage_name",
+							"type": "Expression"
+						}
+					},
+					"method": "GET"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureFunction1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"sftp_host": {
+				"type": "string",
+				"defaultValue": "20250312sftp.blob.core.windows.net"
+			},
+			"sftp_port": {
+				"type": "string",
+				"defaultValue": "22"
+			},
+			"sftp_username": {
+				"type": "string",
+				"defaultValue": "20250312sftp.azuresftp"
+			},
+			"sftp_filepath": {
+				"type": "string",
+				"defaultValue": "CXFT000101"
+			},
+			"blob_container": {
+				"type": "string",
+				"defaultValue": "input"
+			},
+			"blob_name": {
+				"type": "string",
+				"defaultValue": "tmp/testSFTP2.csv"
+			},
+			"key_vault_name": {
+				"type": "string",
+				"defaultValue": "mis-key-vaule"
+			},
+			"secret_name": {
+				"type": "string",
+				"defaultValue": "20250219mis"
+			},
+			"account_storage_name": {
+				"type": "string",
+				"defaultValue": "20250219mis"
+			}
+		},
+		"folder": {
+			"name": "TEST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-12T09:46:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

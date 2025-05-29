@@ -1,0 +1,47 @@
+{
+	"name": "wjq_test_serviceNow_data_set",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "wjq_test_serviceNow",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"sn_url": {
+					"value": "@dataset().sn_url",
+					"type": "Expression"
+				},
+				"sn_user_name": {
+					"value": "@dataset().sn_user_name",
+					"type": "Expression"
+				},
+				"sn_secret": {
+					"value": "@dataset().sn_secret",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"sn_url": {
+				"type": "string"
+			},
+			"sn_user_name": {
+				"type": "string"
+			},
+			"sn_secret": {
+				"type": "string"
+			},
+			"sn_table_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "ServiceNowV2Object",
+		"schema": [],
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().sn_table_name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "delete_Binary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SCP_1_ADFLinkedServices_Blob001_Dev",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "work",
+				"container": "container"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

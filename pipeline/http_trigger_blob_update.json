@@ -1,0 +1,173 @@
+{
+	"name": "http_trigger_blob_update",
+	"properties": {
+		"activities": [
+			{
+				"name": "Azure Function1",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "http_trigger_blob_update",
+					"body": {
+						"value": "@pipeline().parameters.field_lengths",
+						"type": "Expression"
+					},
+					"headers": {
+						"account_name": {
+							"value": "@pipeline().parameters.blob_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.container_name",
+							"type": "Expression"
+						},
+						"source_file_dir": {
+							"value": "@replace(pipeline().parameters.tmp_dir,'input/','') ",
+							"type": "Expression"
+						},
+						"source_file_name": {
+							"value": "@pipeline().parameters.tmp_file_name",
+							"type": "Expression"
+						},
+						"out_file_dir": {
+							"value": "@replace(pipeline().parameters.tmp_dir,'input/','') ",
+							"type": "Expression"
+						},
+						"out_file_name": {
+							"value": "@pipeline().parameters.out_file_name",
+							"type": "Expression"
+						}
+					},
+					"method": "POST"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureFunction1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"blob_name": {
+				"type": "string",
+				"defaultValue": "20250219mis"
+			},
+			"container_name": {
+				"type": "string",
+				"defaultValue": "input"
+			},
+			"tmp_dir": {
+				"type": "string",
+				"defaultValue": "tmp/CXFT000101"
+			},
+			"tmp_file_name": {
+				"type": "string",
+				"defaultValue": "CXFT000101"
+			},
+			"out_file_name": {
+				"type": "string",
+				"defaultValue": "CXFT000101.csv"
+			},
+			"field_lengths": {
+				"type": "string",
+				"defaultValue": {
+					"field_lengths": [
+						10,
+						1,
+						16,
+						15,
+						16,
+						35,
+						35,
+						35,
+						35,
+						60,
+						3,
+						35,
+						35,
+						35,
+						80,
+						35,
+						35,
+						35,
+						35,
+						10,
+						16,
+						3,
+						8,
+						4,
+						4,
+						11,
+						11,
+						11,
+						132,
+						10,
+						1,
+						1,
+						1,
+						1,
+						10,
+						2,
+						11,
+						1,
+						1,
+						1,
+						4,
+						16,
+						4,
+						4,
+						4,
+						40,
+						8,
+						10,
+						1,
+						10,
+						8,
+						1,
+						1,
+						6,
+						2,
+						1,
+						5,
+						3,
+						1,
+						10,
+						10,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						8,
+						12,
+						8,
+						12,
+						1,
+						1
+					]
+				}
+			}
+		},
+		"folder": {
+			"name": "SAMPLE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-07T03:17:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,12 @@
+{
+	"name": "SCP_1_ADFLinkedServices_Blob001_Dev",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://20250226datalake.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		}
+	}
+}

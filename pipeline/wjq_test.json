@@ -1,0 +1,19 @@
+{
+	"name": "wjq_test",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-03-20T05:00:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

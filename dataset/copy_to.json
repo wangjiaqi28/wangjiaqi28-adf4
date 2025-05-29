@@ -1,0 +1,25 @@
+{
+	"name": "copy_to",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250109",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "wk/CXFT008101",
+				"container": "miraicontainer01"
+			},
+			"columnDelimiter": ",",
+			"encodingName": "SHIFT-JIS",
+			"escapeChar": "",
+			"firstRowAsHeader": false,
+			"quoteChar": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

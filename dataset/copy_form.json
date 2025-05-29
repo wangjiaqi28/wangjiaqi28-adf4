@@ -1,0 +1,47 @@
+{
+	"name": "copy_form",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250109",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "CXFT008101",
+				"folderPath": "tmp/CXFT008101",
+				"container": "miraicontainer01"
+			},
+			"columnDelimiter": "\u0001",
+			"encodingName": "SHIFT-JIS",
+			"escapeChar": "",
+			"firstRowAsHeader": false,
+			"quoteChar": ""
+		},
+		"schema": [
+			{
+				"name": "列1",
+				"type": "String"
+			},
+			{
+				"name": "列2",
+				"type": "String"
+			},
+			{
+				"name": "列3",
+				"type": "String"
+			},
+			{
+				"name": "列4",
+				"type": "String"
+			},
+			{
+				"name": "列5",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

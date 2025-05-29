@@ -1,0 +1,28 @@
+{
+	"name": "SBTIMP0025-pipeline02-trigger01",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SBTIMP0025-pipeline02",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"tmp_dir": "@trigger().outputs.body.folderPath",
+					"tmp_file_name": "@trigger().outputs.body.filename"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/miraicontainer01/blobs/tmp/CXFT008101/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

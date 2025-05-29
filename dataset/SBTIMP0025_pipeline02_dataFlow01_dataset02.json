@@ -1,0 +1,27 @@
+{
+	"name": "SBTIMP0025_pipeline02_dataFlow01_dataset02",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250219",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Test.csv",
+				"folderPath": "core/CXFT008101",
+				"container": "miraicontainer01"
+			},
+			"columnDelimiter": ",",
+			"rowDelimiter": "\n",
+			"encodingName": "UTF-8",
+			"escapeChar": "\"",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

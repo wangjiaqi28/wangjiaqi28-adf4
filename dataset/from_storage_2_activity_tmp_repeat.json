@@ -1,0 +1,29 @@
+{
+	"name": "from_storage_2_activity_tmp_repeat",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250219",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "CXFT000101",
+				"folderPath": "tmp/CXFT000101",
+				"container": "input"
+			},
+			"columnDelimiter": ",",
+			"encodingName": "SHIFT-JIS",
+			"escapeChar": "\"",
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

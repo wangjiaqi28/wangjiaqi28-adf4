@@ -1,0 +1,41 @@
+{
+	"name": "pipeline2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "AA",
+					"value": {
+						"value": "@substring(pipeline().parameters.tmp_dir, 0, 4)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"tmp_dir": {
+				"type": "string",
+				"defaultValue": "imp:output/core/IFA/AAAA/D/c.csv"
+			}
+		},
+		"variables": {
+			"AA": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "TEST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-27T02:48:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,127 @@
+{
+	"name": "SBTSUP0024-pipeline01",
+	"properties": {
+		"activities": [
+			{
+				"name": "SBTSUP0024-pipeline01-excutePipeline01",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SBTSUP0024-pipeline01-copy01",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SBTSUP0024-pipeline02",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"core_dir": {
+							"value": "@pipeline().parameters.core_dir",
+							"type": "Expression"
+						},
+						"core_file_name": {
+							"value": "@pipeline().parameters.core_file_name",
+							"type": "Expression"
+						},
+						"del_info_file": {
+							"value": "@pipeline().parameters.del_info_file",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "SBTSUP0024-pipeline01-copy01",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SBTSUP0024_pipeline01_dataset01",
+						"type": "DatasetReference",
+						"parameters": {
+							"core_dir": "@pipeline().parameters.core_dir",
+							"core_file_name": "@pipeline().parameters.core_file_name"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SBTSUP0024_pipeline01_dataset02",
+						"type": "DatasetReference",
+						"parameters": {
+							"core_dir": "@pipeline().parameters.core_dir",
+							"core_file_name": "@pipeline().parameters.core_file_name"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"core_dir": {
+				"type": "string",
+				"defaultValue": "core/CXFT000101"
+			},
+			"core_file_name": {
+				"type": "string",
+				"defaultValue": "CXFT000101_SC20250312-185811.csv"
+			},
+			"del_info_file": {
+				"type": "string",
+				"defaultValue": "https://20250219mis.blob.core.windows.net/miraicontainer01/tmp/CXFT000101_DEL/DEL_INFO"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-13T03:24:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

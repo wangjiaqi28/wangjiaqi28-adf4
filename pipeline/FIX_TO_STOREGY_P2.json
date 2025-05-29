@@ -1,0 +1,196 @@
+{
+	"name": "FIX_TO_STOREGY_P2",
+	"properties": {
+		"description": "提供側変換パイプライン",
+		"activities": [
+			{
+				"name": "TEST_COPY_TO_STOREAGY",
+				"description": "提供側基軸ファイルを変換し提供ファイル領域に格納するアクティビティ",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "to_storage_1_activity_core",
+						"type": "DatasetReference",
+						"parameters": {
+							"dir": {
+								"value": "@replace(pipeline().parameters.core_dir, 'output/', '')",
+								"type": "Expression"
+							},
+							"file_name": {
+								"value": "@pipeline().parameters.core_file_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "to_storage_1_activity_sup",
+						"type": "DatasetReference",
+						"parameters": {
+							"dir": {
+								"value": "@pipeline().parameters.sup_dir",
+								"type": "Expression"
+							},
+							"file_name": {
+								"value": "@pipeline().parameters.core_file_name",
+								"type": "Expression"
+							},
+							"file_first_row_header": {
+								"value": "@pipeline().parameters.sup_file_first_row_header",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "WriteNewContent",
+				"description": "削除情報ファイルに提供ファイルの情報を設定するアクティビティ",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "GetOldContent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "PUT",
+					"headers": {
+						"x-ms-version": "2024-11-04",
+						"x-ms-blob-type": "BlockBlob",
+						"x-ms-meta-tmp": {
+							"value": "@activity('GetOldContent').output.ADFWebActivityResponseHeaders['x-ms-meta-tmp']",
+							"type": "Expression"
+						}
+					},
+					"turnOffAsync": false,
+					"url": {
+						"value": "@concat('https://20250110mis.blob.core.windows.net/',replace(pipeline().parameters.core_dir,'output/core/','input/tmp/'),'_DEL','/DEL_INFO')",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "@concat(activity('GetOldContent').output.Response,decodeUriComponent('%0D%0A'),'sup:',pipeline().parameters.core_dir,'/',pipeline().parameters.core_file_name,decodeUriComponent('%0D%0A'),'sup:','output/',pipeline().parameters.sup_dir,'/',pipeline().parameters.core_file_name)",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
+					}
+				}
+			},
+			{
+				"name": "GetOldContent",
+				"description": "削除情報ファイル内容を取得するアクティビティ",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "TEST_COPY_TO_STOREAGY",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-ms-version": "2024-11-04"
+					},
+					"url": {
+						"value": "@concat('https://20250110mis.blob.core.windows.net/',replace(pipeline().parameters.core_dir,'output/core/','input/tmp/'),'_DEL','/DEL_INFO')",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"core_dir": {
+				"type": "string",
+				"defaultValue": "ss"
+			},
+			"core_file_name": {
+				"type": "string",
+				"defaultValue": "ss"
+			},
+			"sup_dir": {
+				"type": "string",
+				"defaultValue": "sup/CXFT000101"
+			},
+			"sup_file_name": {
+				"type": "string",
+				"defaultValue": "ss"
+			},
+			"sup_file_first_row_header": {
+				"type": "bool",
+				"defaultValue": false
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-04-30T03:06:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

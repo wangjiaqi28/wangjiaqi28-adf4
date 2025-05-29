@@ -1,0 +1,118 @@
+{
+	"name": "SBTIMP0024-pipeline01-old",
+	"properties": {
+		"activities": [
+			{
+				"name": "Azure Function1",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "http_trigger_ssh_sftp",
+					"body": "",
+					"headers": {
+						"sftp_host": {
+							"value": "@pipeline().parameters.sftp_host",
+							"type": "Expression"
+						},
+						"sftp_port": {
+							"value": "@pipeline().parameters.sftp_port",
+							"type": "Expression"
+						},
+						"sftp_user_name": {
+							"value": "@pipeline().parameters.sftp_user_name",
+							"type": "Expression"
+						},
+						"sftp_key_vault_name": {
+							"value": "@pipeline().parameters.sftp_key_vault_name",
+							"type": "Expression"
+						},
+						"sftp_secret": {
+							"value": "@pipeline().parameters.sftp_secret",
+							"type": "Expression"
+						},
+						"sftp_file_name": {
+							"value": "@pipeline().parameters.sftp_file_name",
+							"type": "Expression"
+						},
+						"sftp_dir": {
+							"value": "@pipeline().parameters.sftp_dir",
+							"type": "Expression"
+						},
+						"tmp_blob_name": {
+							"value": "@pipeline().parameters.tmp_blob_name",
+							"type": "Expression"
+						},
+						"tmp_container": {
+							"value": "@pipeline().parameters.tmp_container",
+							"type": "Expression"
+						},
+						"tmp_dir": {
+							"value": "@pipeline().parameters.tmp_dir",
+							"type": "Expression"
+						}
+					},
+					"method": "GET"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureFunction1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"sftp_host": {
+				"type": "string",
+				"defaultValue": "20250312sftp.blob.core.windows.net"
+			},
+			"sftp_port": {
+				"type": "string",
+				"defaultValue": "22"
+			},
+			"sftp_user_name": {
+				"type": "string",
+				"defaultValue": "20250312sftp.azuresftp"
+			},
+			"sftp_dir": {
+				"type": "string"
+			},
+			"sftp_file_name": {
+				"type": "string",
+				"defaultValue": "CXFT000101"
+			},
+			"sftp_secret": {
+				"type": "string",
+				"defaultValue": "sftp-ssh-key"
+			},
+			"sftp_key_vault_name": {
+				"type": "string",
+				"defaultValue": "mis-key-value"
+			},
+			"tmp_blob_name": {
+				"type": "string",
+				"defaultValue": "20250219mis"
+			},
+			"tmp_container": {
+				"type": "string",
+				"defaultValue": "input"
+			},
+			"tmp_dir": {
+				"type": "string",
+				"defaultValue": "tmp/CXFT000101"
+			}
+		},
+		"folder": {
+			"name": "SAMPLE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-12T06:42:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,101 @@
+{
+	"name": "FIX_TO_STOREGY_01",
+	"properties": {
+		"description": "移送パイプライン",
+		"activities": [
+			{
+				"name": "TEST_COPY_TO_STOREAGY",
+				"description": "取込側基軸ファイルを提供側基軸ファイル領域に格納するアクティビティ",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "to_storegy_copy_from_data_set",
+						"type": "DatasetReference",
+						"parameters": {
+							"core_dir": {
+								"value": "@replace(pipeline().parameters.core_dir, 'input/', '')",
+								"type": "Expression"
+							},
+							"core_file_name": {
+								"value": "@pipeline().parameters.core_file_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "to_storegy_copy_to_data_set",
+						"type": "DatasetReference",
+						"parameters": {
+							"core_dir": {
+								"value": "@replace(pipeline().parameters.core_dir, 'input/', '')",
+								"type": "Expression"
+							},
+							"core_file_name": {
+								"value": "@pipeline().parameters.core_file_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"core_dir": {
+				"type": "string"
+			},
+			"core_file_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "SAMPLE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-27T02:48:08Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

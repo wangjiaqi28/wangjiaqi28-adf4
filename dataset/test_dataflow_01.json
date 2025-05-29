@@ -1,0 +1,25 @@
+{
+	"name": "test_dataflow_01",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250422",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "CXFT008101_WK.csv",
+				"folderPath": "core/CXFT008101",
+				"container": "miraicontainer01"
+			},
+			"columnDelimiter": ",",
+			"encodingName": "SHIFT-JIS",
+			"escapeChar": "\"",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

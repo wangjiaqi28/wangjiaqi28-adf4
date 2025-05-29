@@ -1,0 +1,12 @@
+{
+	"name": "mis_link_service_20250109",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://20250219mis.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		}
+	}
+}

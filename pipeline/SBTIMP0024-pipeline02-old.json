@@ -1,0 +1,445 @@
+{
+	"name": "SBTIMP0024-pipeline02-old",
+	"properties": {
+		"activities": [
+			{
+				"name": "web",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "test_dataflow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "PUT",
+					"headers": {
+						"x-ms-version": "2024-11-04",
+						"x-ms-blob-type": "BlockBlob",
+						"x-ms-meta-tmp": {
+							"value": "@pipeline().parameters.tmp_file_name",
+							"type": "Expression"
+						}
+					},
+					"disableCertValidation": true,
+					"turnOffAsync": false,
+					"url": {
+						"value": "@concat('https://',pipeline().parameters.blob_name,'.blob.core.windows.net/',pipeline().parameters.tmp_dir,'_DEL/DEL_INFO')",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "@concat('imp:bloomcontainer01/',pipeline().parameters.core_diff_dir,'/',variables('core_diff_file_name'),\ndecodeUriComponent('%0D%0A'),\n'imp:bloomcontainer01/',pipeline().parameters.core_all_dir,'/',variables('core_all_file_name')\n)",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
+					}
+				}
+			},
+			{
+				"name": "test_dataflow",
+				"description": "変換、差分ファイル",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Azure Function1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "SBTIMP0024_pipeline02_dataFlow01",
+						"type": "DataFlowReference",
+						"parameters": {
+							"core_diff_file_name": {
+								"value": "'@{variables('core_diff_file_name')}'",
+								"type": "Expression"
+							},
+							"core_all_file_name": {
+								"value": "'@{variables('core_all_file_name')}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"SBTIMP0024Pipeline02DataFlow01Source02": {
+								"dir": {
+									"value": "@pipeline().parameters.core_all_dir",
+									"type": "Expression"
+								},
+								"file_name": {
+									"value": "@variables('last_file_name')",
+									"type": "Expression"
+								}
+							},
+							"SBTIMP0024Pipeline02DataFlow01Source01": {
+								"dir": {
+									"value": "@pipeline().parameters.core_diff_dir",
+									"type": "Expression"
+								},
+								"file_name": {
+									"value": "@pipeline().parameters.out_file_name",
+									"type": "Expression"
+								},
+								"file_column_delimiter": "@pipeline().parameters.tmp_file_column_delimiter",
+								"file_encoding": "@pipeline().parameters.tmp_file_encoding",
+								"file_quote_char": "@pipeline().parameters.tmp_file_quote_char",
+								"file_escape_char": "@pipeline().parameters.tmp_file_escape_char",
+								"file_first_row_header": "@pipeline().parameters.tmp_file_first_row_header",
+								"null_value": {
+									"value": "@pipeline().parameters.tmp_null_value",
+									"type": "Expression"
+								}
+							},
+							"SBTIMP0024Pipeline02DataFlow01Sink01": {
+								"dir": {
+									"value": "@pipeline().parameters.core_diff_dir",
+									"type": "Expression"
+								},
+								"file_name": "*"
+							},
+							"SBTIMP0024Pipeline02DataFlow01Sink02": {
+								"dir": {
+									"value": "@pipeline().parameters.core_all_dir",
+									"type": "Expression"
+								},
+								"file_name": "*"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "getCoreYmdFileName",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "SBTIMP0017_pipeline02_dataset01",
+						"type": "DatasetReference",
+						"parameters": {
+							"dir": "@pipeline().parameters.core_all_dir",
+							"file_name": "*"
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getCoreYmdFileName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getCoreYmdFileName').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@or(empty(variables('last_file_name')),\nand( \n    contains(\n        item().name, '_SC'),\n        greaterOrEquals(\n            replace(substring(item().name,add(lastIndexOf(item().name, '_SC'), 3), 15), '-', ''), \n            replace(substring(variables('last_file_name'),add(lastIndexOf(variables('last_file_name'), '_SC'), 3), 15), '-', '')\n            )\n))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "setLastFileName",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "last_file_name",
+											"value": {
+												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Azure Function1",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "http_trigger_blob_update",
+					"body": {
+						"value": "@pipeline().parameters.field_lengths",
+						"type": "Expression"
+					},
+					"headers": {
+						"account_name": {
+							"value": "@pipeline().parameters.blob_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.container_name",
+							"type": "Expression"
+						},
+						"source_file_dir": {
+							"value": "@replace(pipeline().parameters.tmp_dir,'input/','') ",
+							"type": "Expression"
+						},
+						"source_file_name": {
+							"value": "@pipeline().parameters.tmp_file_name",
+							"type": "Expression"
+						},
+						"out_file_dir": {
+							"value": "@pipeline().parameters.core_diff_dir",
+							"type": "Expression"
+						},
+						"out_file_name": {
+							"value": "@pipeline().parameters.out_file_name",
+							"type": "Expression"
+						}
+					},
+					"method": "POST"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureFunction1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"tmp_dir": {
+				"type": "string",
+				"defaultValue": "input/tmp/CXFT000101"
+			},
+			"tmp_file_name": {
+				"type": "string",
+				"defaultValue": "CXFT000101"
+			},
+			"tmp_file_column_delimiter": {
+				"type": "string",
+				"defaultValue": ","
+			},
+			"tmp_file_encoding": {
+				"type": "string",
+				"defaultValue": "SHIFT-JIS"
+			},
+			"tmp_file_quote_char": {
+				"type": "string"
+			},
+			"tmp_file_escape_char": {
+				"type": "string"
+			},
+			"tmp_file_first_row_header": {
+				"type": "bool",
+				"defaultValue": false
+			},
+			"tmp_null_value": {
+				"type": "string"
+			},
+			"core_diff_dir": {
+				"type": "string",
+				"defaultValue": "core/CXFT000101"
+			},
+			"core_all_dir": {
+				"type": "string",
+				"defaultValue": "core/CXFT008101"
+			},
+			"core_all_file_name": {
+				"type": "string",
+				"defaultValue": "CXFT008101"
+			},
+			"blob_name": {
+				"type": "string",
+				"defaultValue": "20250219mis"
+			},
+			"container_name": {
+				"type": "string",
+				"defaultValue": "input"
+			},
+			"out_file_name": {
+				"type": "string",
+				"defaultValue": "tmp"
+			},
+			"field_lengths": {
+				"type": "string",
+				"defaultValue": {
+					"field_lengths": [
+						10,
+						1,
+						16,
+						15,
+						16,
+						35,
+						35,
+						35,
+						35,
+						60,
+						3,
+						35,
+						35,
+						35,
+						80,
+						35,
+						35,
+						35,
+						35,
+						10,
+						16,
+						3,
+						8,
+						4,
+						4,
+						11,
+						11,
+						11,
+						132,
+						10,
+						1,
+						1,
+						1,
+						1,
+						10,
+						2,
+						11,
+						1,
+						1,
+						1,
+						4,
+						16,
+						4,
+						4,
+						4,
+						40,
+						8,
+						10,
+						1,
+						10,
+						8,
+						1,
+						1,
+						6,
+						2,
+						1,
+						5,
+						3,
+						1,
+						10,
+						10,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						1,
+						8,
+						12,
+						8,
+						12,
+						1,
+						1
+					]
+				}
+			}
+		},
+		"variables": {
+			"last_file_name": {
+				"type": "String"
+			},
+			"core_diff_file_name": {
+				"type": "String",
+				"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.tmp_file_name, '.'), -1) , pipeline().parameters.tmp_file_name,substring(pipeline().parameters.tmp_file_name, 0, lastIndexOf(pipeline().parameters.tmp_file_name, '.'))) ,'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+			},
+			"core_all_file_name": {
+				"type": "String",
+				"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.core_all_file_name, '.'), -1) , pipeline().parameters.core_all_file_name,substring(pipeline().parameters.core_all_file_name, 0, lastIndexOf(pipeline().parameters.core_all_file_name, '.'))) ,'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+			}
+		},
+		"folder": {
+			"name": "SAMPLE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-07T08:14:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,27 @@
+{
+	"name": "SBTIMP0025_pipeline02_dataset03",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250219",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dir": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().dir",
+					"type": "Expression"
+				},
+				"container": "miraicontainer01"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

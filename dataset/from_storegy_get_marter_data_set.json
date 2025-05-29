@@ -1,0 +1,26 @@
+{
+	"name": "from_storegy_get_marter_data_set",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250109",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "if_a.txt",
+				"folderPath": "tmp/if_a",
+				"container": "input"
+			},
+			"columnDelimiter": ",",
+			"encodingName": "SHIFT-JIS",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

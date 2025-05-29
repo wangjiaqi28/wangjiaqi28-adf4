@@ -1,0 +1,52 @@
+{
+	"name": "SBTIMP0025_pipeline02_dataset02",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250219",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dir": {
+				"type": "string"
+			},
+			"file_encoding": {
+				"type": "string"
+			},
+			"file_first_row_header": {
+				"type": "bool"
+			},
+			"null_value": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().dir",
+					"type": "Expression"
+				},
+				"container": "miraicontainer01"
+			},
+			"columnDelimiter": ",",
+			"encodingName": {
+				"value": "@dataset().file_encoding",
+				"type": "Expression"
+			},
+			"escapeChar": "",
+			"firstRowAsHeader": {
+				"value": "@dataset().file_first_row_header",
+				"type": "Expression"
+			},
+			"nullValue": {
+				"value": "@dataset().null_value",
+				"type": "Expression"
+			},
+			"quoteChar": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

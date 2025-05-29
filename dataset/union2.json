@@ -1,0 +1,45 @@
+{
+	"name": "union2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mis_link_service_20250109",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "union2.csv",
+				"container": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "A",
+				"type": "String"
+			},
+			{
+				"name": "B",
+				"type": "String"
+			},
+			{
+				"name": "C",
+				"type": "String"
+			},
+			{
+				"name": "F",
+				"type": "String"
+			},
+			{
+				"name": "G",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

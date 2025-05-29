@@ -1,0 +1,79 @@
+{
+	"name": "from_storage_activity_copy_from_20250109",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Sftp_TEST",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dir": {
+				"type": "string"
+			},
+			"file_name": {
+				"type": "string"
+			},
+			"file_column_delimiter": {
+				"type": "string"
+			},
+			"file_encoding": {
+				"type": "string"
+			},
+			"file_quote_char": {
+				"type": "string"
+			},
+			"file_escape_char": {
+				"type": "string"
+			},
+			"file_first_row_header": {
+				"type": "bool"
+			},
+			"null_value": {
+				"type": "string"
+			},
+			"container": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().file_name",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dir",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": {
+				"value": "@dataset().file_column_delimiter",
+				"type": "Expression"
+			},
+			"encodingName": {
+				"value": "@dataset().file_encoding",
+				"type": "Expression"
+			},
+			"escapeChar": {
+				"value": "@dataset().file_escape_char",
+				"type": "Expression"
+			},
+			"firstRowAsHeader": {
+				"value": "@dataset().file_first_row_header",
+				"type": "Expression"
+			},
+			"nullValue": {
+				"value": "@dataset().null_value",
+				"type": "Expression"
+			},
+			"quoteChar": {
+				"value": "@dataset().file_quote_char",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

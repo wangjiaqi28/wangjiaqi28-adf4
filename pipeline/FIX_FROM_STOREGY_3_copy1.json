@@ -1,0 +1,217 @@
+{
+	"name": "FIX_FROM_STOREGY_3_copy1",
+	"properties": {
+		"description": "取込側変換パイプライン",
+		"activities": [
+			{
+				"name": "TEST_DATA_COPY",
+				"description": "一時ファイルから基軸ファイルを作成し、取込側基軸ファイル領域に格納するアクティビティ",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "from_storage_activity_copy_from_20250109",
+						"type": "DatasetReference",
+						"parameters": {
+							"dir": {
+								"value": "@replace(pipeline().parameters.tmp_dir, 'input/','')",
+								"type": "Expression"
+							},
+							"file_name": {
+								"value": "@pipeline().parameters.tmp_file_name",
+								"type": "Expression"
+							},
+							"file_column_delimiter": {
+								"value": "@pipeline().parameters.tmp_file_column_delimiter",
+								"type": "Expression"
+							},
+							"file_encoding": {
+								"value": "@pipeline().parameters.tmp_file_encoding",
+								"type": "Expression"
+							},
+							"file_quote_char": {
+								"value": "@pipeline().parameters.tmp_file_quote_char",
+								"type": "Expression"
+							},
+							"file_escape_char": {
+								"value": "@pipeline().parameters.tmp_file_escape_char",
+								"type": "Expression"
+							},
+							"file_first_row_header": {
+								"value": "@pipeline().parameters.tmp_file_first_row_header",
+								"type": "Expression"
+							},
+							"null_value": {
+								"value": "@pipeline().parameters.tmp_null_value",
+								"type": "Expression"
+							},
+							"container": {
+								"value": "@pipeline().parameters.core_container",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "from_storage_activity_copy_to_20250109",
+						"type": "DatasetReference",
+						"parameters": {
+							"dir": {
+								"value": "@pipeline().parameters.core_dir",
+								"type": "Expression"
+							},
+							"file_name": {
+								"value": "@variables('core_file_name')",
+								"type": "Expression"
+							},
+							"container": {
+								"value": "@pipeline().parameters.core_container",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "web",
+				"description": "削除情報ファイルに一時ファイルと基軸ファイルの情報を設定するアクティビティ",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "TEST_DATA_COPY",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "PUT",
+					"headers": {
+						"x-ms-version": "2024-11-04",
+						"x-ms-meta-tmp": {
+							"value": "@pipeline().parameters.tmp_file_name",
+							"type": "Expression"
+						},
+						"x-ms-blob-type": "BlockBlob"
+					},
+					"disableCertValidation": true,
+					"turnOffAsync": false,
+					"url": {
+						"value": "@concat('https://20250219mis.blob.core.windows.net/',concat(pipeline().parameters.tmp_dir,'_DEL'),'/DEL_INFO')",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "@concat('imp:',pipeline().parameters.core_container,'/',pipeline().parameters.core_dir,'/',variables('core_file_name'))",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com/"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"tmp_dir": {
+				"type": "string"
+			},
+			"tmp_file_name": {
+				"type": "string"
+			},
+			"tmp_file_column_delimiter": {
+				"type": "string",
+				"defaultValue": ","
+			},
+			"tmp_file_encoding": {
+				"type": "string",
+				"defaultValue": "SHIFT-JIS"
+			},
+			"tmp_file_quote_char": {
+				"type": "string",
+				"defaultValue": "\""
+			},
+			"tmp_file_escape_char": {
+				"type": "string",
+				"defaultValue": "\""
+			},
+			"tmp_file_first_row_header": {
+				"type": "bool",
+				"defaultValue": true
+			},
+			"tmp_null_value": {
+				"type": "string"
+			},
+			"core_container": {
+				"type": "string",
+				"defaultValue": "input"
+			},
+			"core_dir": {
+				"type": "string",
+				"defaultValue": "core/IFB"
+			}
+		},
+		"variables": {
+			"core_file_name": {
+				"type": "String",
+				"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.tmp_file_name, '.'), -1) , pipeline().parameters.tmp_file_name,substring(pipeline().parameters.tmp_file_name, 0, lastIndexOf(pipeline().parameters.tmp_file_name, '.'))),'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+			}
+		},
+		"folder": {
+			"name": "TEST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-04-07T09:18:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
