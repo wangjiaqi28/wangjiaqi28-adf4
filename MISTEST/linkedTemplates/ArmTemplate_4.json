@@ -1,0 +1,1470 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "データ ファクトリ名",
+			"defaultValue": "MISTEST"
+		},
+		"test_webhook_url_trigger_properties_pipeline16_parameters_filename": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"test_webhook_url_trigger_properties_pipeline16_parameters_foldpath": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"test_webhook_url_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"trigger_sftp_delete2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/test_data_copy_02')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250422",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dir": {
+						"type": "string"
+					},
+					"file_encoding": {
+						"type": "string"
+					},
+					"file_first_row_header": {
+						"type": "bool"
+					},
+					"null_value": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().dir",
+							"type": "Expression"
+						},
+						"container": "miraicontainer01"
+					},
+					"columnDelimiter": ",",
+					"encodingName": {
+						"value": "@dataset().file_encoding",
+						"type": "Expression"
+					},
+					"escapeChar": "",
+					"firstRowAsHeader": {
+						"value": "@dataset().file_first_row_header",
+						"type": "Expression"
+					},
+					"nullValue": {
+						"value": "@dataset().null_value",
+						"type": "Expression"
+					},
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test_dataflow_01')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250422",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "CXFT008101_WK.csv",
+						"folderPath": "core/CXFT008101",
+						"container": "miraicontainer01"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "SHIFT-JIS",
+					"escapeChar": "\"",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test_dataflow_02')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250422",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "core/CXFT008101",
+						"container": "miraicontainer01"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"encodingName": "UTF-8",
+					"escapeChar": "\"",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/to_storage_1_activity_core')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dir": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().dir",
+							"type": "Expression"
+						},
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "UTF-8 without BOM",
+					"escapeChar": "\"",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/to_storage_1_activity_sup')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dir": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					},
+					"file_first_row_header": {
+						"type": "bool"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().dir",
+							"type": "Expression"
+						},
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"encodingName": "UTF-8",
+					"escapeChar": "\"",
+					"firstRowAsHeader": {
+						"value": "@dataset().file_first_row_header",
+						"type": "Expression"
+					},
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/to_storegy_copy_from_data_set')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"core_dir": {
+						"type": "string"
+					},
+					"core_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().core_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().core_dir",
+							"type": "Expression"
+						},
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "UTF-8 without BOM",
+					"escapeChar": "\"",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/to_storegy_copy_to_data_set')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"core_dir": {
+						"type": "string"
+					},
+					"core_file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().core_file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().core_dir",
+							"type": "Expression"
+						},
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"encodingName": "UTF-8 without BOM",
+					"escapeChar": "\"",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/union1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "11111.csv",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/union2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "union2.csv",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "A",
+						"type": "String"
+					},
+					{
+						"name": "B",
+						"type": "String"
+					},
+					{
+						"name": "C",
+						"type": "String"
+					},
+					{
+						"name": "F",
+						"type": "String"
+					},
+					{
+						"name": "G",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_blob_data_set_in')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "wj_test_linkservice",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "test_1.txt",
+						"folderPath": "wjq/in",
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "SHIFT-JIS",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "row",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_blob_data_set_out')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "wj_test_linkservice",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "out.txt",
+						"folderPath": "wjq/out",
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "a",
+						"type": "String"
+					},
+					{
+						"name": "bbb",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_serviceNow_data_set')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "wjq_test_serviceNow",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"sn_url": {
+							"value": "@dataset().sn_url",
+							"type": "Expression"
+						},
+						"sn_user_name": {
+							"value": "@dataset().sn_user_name",
+							"type": "Expression"
+						},
+						"sn_secret": {
+							"value": "@dataset().sn_secret",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"sn_url": {
+						"type": "string"
+					},
+					"sn_user_name": {
+						"type": "string"
+					},
+					"sn_secret": {
+						"type": "string"
+					},
+					"sn_table_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "ServiceNowV2Object",
+				"schema": [],
+				"typeProperties": {
+					"tableName": {
+						"value": "@dataset().sn_table_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_sftp_data_set')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "wjq_test_sftp_link_service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "SftpLocation",
+						"fileName": "123",
+						"folderPath": "/123"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test_webhook_url_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline16",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"filename": "[parameters('test_webhook_url_trigger_properties_pipeline16_parameters_filename')]",
+							"foldpath": "[parameters('test_webhook_url_trigger_properties_pipeline16_parameters_foldpath')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/test/aa/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('test_webhook_url_trigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline7",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 2,
+						"startTime": "2025-02-26T18:20:00",
+						"timeZone": "China Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger_sftp_delete2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline13",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/test/",
+					"ignoreEmptyBlobs": false,
+					"scope": "[parameters('trigger_sftp_delete2_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobDeleted"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FIX_DELETE_02')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"description": "削除情報ファイルの中身を読み込み",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "copy_form",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"description": "アイテムNo1で取得した削除対象ファイルリストをループする",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "If Condition1",
+									"description": "下記条件に満たす場合True,それ以外の場合False\n・削除対象ファイルが取込側ストレジアカウントに保存されている場合",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(substring(item().Prop_0, 0, 4), 'imp:')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "DeleteSup",
+												"description": "提供側ストレジアカウント配下のファイルを削除するアクティビティ",
+												"type": "Delete",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 1,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "delete_sup_storegy_by_delete_data_set",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": {
+																"value": "@substring(item().Prop_0, 4, sub(indexOf(item().Prop_0, '/'),4))",
+																"type": "Expression"
+															},
+															"dir": {
+																"value": "@substring(item().Prop_0, add(indexOf(item().Prop_0, '/'),1), sub(sub(lastIndexOf(item().Prop_0, '/'),indexOf(item().Prop_0, '/')),1))",
+																"type": "Expression"
+															},
+															"file_name": {
+																"value": "@substring(item().Prop_0, add(lastIndexOf(item().Prop_0, '/'),1), sub(sub(length(item().Prop_0),lastIndexOf(item().Prop_0, '/')),1))",
+																"type": "Expression"
+															}
+														}
+													},
+													"enableLogging": false,
+													"storeSettings": {
+														"type": "AzureBlobStorageReadSettings",
+														"recursive": true,
+														"enablePartitionDiscovery": false
+													}
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "DeleteImp",
+												"description": "取込側ストレジアカウント配下のファイルを削除するアクティビティ",
+												"type": "Delete",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 1,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "delete_core_storegy_by_delete_data_set",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": {
+																"value": "@substring(item().Prop_0, 4, sub(indexOf(item().Prop_0, '/'),4))",
+																"type": "Expression"
+															},
+															"dir": "@substring(item().Prop_0, add(indexOf(item().Prop_0, '/'),1), sub(sub(lastIndexOf(item().Prop_0, '/'),indexOf(item().Prop_0, '/')),1))",
+															"file_name": "@substring(item().Prop_0, add(lastIndexOf(item().Prop_0, '/'),1), sub(sub(length(item().Prop_0),lastIndexOf(item().Prop_0, '/')),1))"
+														}
+													},
+													"enableLogging": false,
+													"storeSettings": {
+														"type": "AzureBlobStorageReadSettings",
+														"recursive": true,
+														"enablePartitionDiscovery": false
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"del_file_dir": {
+						"type": "string"
+					},
+					"container": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "SAMPLE"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-02-27T02:48:08Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FIX_FROM_STOREGY')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "取込側変換パイプライン",
+				"activities": [
+					{
+						"name": "TEST_DATA_COPY",
+						"description": "一時ファイルから基軸ファイルを作成し、取込側基軸ファイル領域に格納するアクティビティ",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "from_storage_activity_copy_from_20250109",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": {
+										"value": "@replace(pipeline().parameters.tmp_dir, 'input/','')",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@pipeline().parameters.tmp_file_name",
+										"type": "Expression"
+									},
+									"file_column_delimiter": {
+										"value": "@pipeline().parameters.tmp_file_column_delimiter",
+										"type": "Expression"
+									},
+									"file_encoding": {
+										"value": "@pipeline().parameters.tmp_file_encoding",
+										"type": "Expression"
+									},
+									"file_quote_char": {
+										"value": "@pipeline().parameters.tmp_file_quote_char",
+										"type": "Expression"
+									},
+									"file_escape_char": {
+										"value": "@pipeline().parameters.tmp_file_escape_char",
+										"type": "Expression"
+									},
+									"file_first_row_header": {
+										"value": "@pipeline().parameters.tmp_file_first_row_header",
+										"type": "Expression"
+									},
+									"null_value": {
+										"value": "@pipeline().parameters.tmp_null_value",
+										"type": "Expression"
+									},
+									"container": {
+										"value": "@pipeline().parameters.core_container",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "from_storage_activity_copy_to_20250109",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": {
+										"value": "@pipeline().parameters.core_dir",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@variables('core_file_name')",
+										"type": "Expression"
+									},
+									"container": {
+										"value": "@pipeline().parameters.core_container",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "web",
+						"description": "削除情報ファイルに一時ファイルと基軸ファイルの情報を設定するアクティビティ",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "TEST_DATA_COPY",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PUT",
+							"headers": {
+								"x-ms-version": "2024-11-04",
+								"x-ms-meta-tmp": {
+									"value": "@pipeline().parameters.tmp_file_name",
+									"type": "Expression"
+								},
+								"x-ms-blob-type": "BlockBlob"
+							},
+							"disableCertValidation": true,
+							"turnOffAsync": false,
+							"url": {
+								"value": "@concat('https://20250110mis.blob.core.windows.net/',concat(pipeline().parameters.tmp_dir,'_DEL'),'/DEL_INFO')",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@concat('imp:',pipeline().parameters.core_container,'/',pipeline().parameters.core_dir,'/',variables('core_file_name'))",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://storage.azure.com/"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "input/tmp/IFB"
+					},
+					"tmp_file_name": {
+						"type": "string",
+						"defaultValue": "IFB.csv"
+					},
+					"tmp_file_column_delimiter": {
+						"type": "string",
+						"defaultValue": ","
+					},
+					"tmp_file_encoding": {
+						"type": "string",
+						"defaultValue": "SHIFT-JIS"
+					},
+					"tmp_file_quote_char": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"tmp_file_escape_char": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"tmp_file_first_row_header": {
+						"type": "bool",
+						"defaultValue": true
+					},
+					"tmp_null_value": {
+						"type": "string",
+						"defaultValue": " "
+					},
+					"core_container": {
+						"type": "string",
+						"defaultValue": "input"
+					},
+					"core_dir": {
+						"type": "string",
+						"defaultValue": "core/IFB"
+					}
+				},
+				"variables": {
+					"core_file_name": {
+						"type": "String",
+						"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.tmp_file_name, '.'), -1) , pipeline().parameters.tmp_file_name,substring(pipeline().parameters.tmp_file_name, 0, lastIndexOf(pipeline().parameters.tmp_file_name, '.'))),'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+					}
+				},
+				"folder": {
+					"name": "SAMPLE"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-07T08:06:06Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FIX_FROM_STOREGY_2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "取込側変換パイプライン",
+				"activities": [
+					{
+						"name": "TEST_DATA_COPY",
+						"description": "一時ファイルから基軸ファイルを作成し、取込側基軸ファイル領域に格納するアクティビティ",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "from_storage_activity_copy_from_20250109",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": {
+										"value": "@replace(pipeline().parameters.tmp_dir, 'input/','')",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@pipeline().parameters.tmp_file_name",
+										"type": "Expression"
+									},
+									"file_column_delimiter": {
+										"value": "@pipeline().parameters.tmp_file_column_delimiter",
+										"type": "Expression"
+									},
+									"file_encoding": {
+										"value": "@pipeline().parameters.tmp_file_encoding",
+										"type": "Expression"
+									},
+									"file_quote_char": {
+										"value": "@pipeline().parameters.tmp_file_quote_char",
+										"type": "Expression"
+									},
+									"file_escape_char": {
+										"value": "@pipeline().parameters.tmp_file_escape_char",
+										"type": "Expression"
+									},
+									"file_first_row_header": {
+										"value": "@pipeline().parameters.tmp_file_first_row_header",
+										"type": "Expression"
+									},
+									"null_value": {
+										"value": "@pipeline().parameters.tmp_null_value",
+										"type": "Expression"
+									},
+									"container": {
+										"value": "@pipeline().parameters.core_container",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "from_storage_activity_copy_to_20250109",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": {
+										"value": "@pipeline().parameters.core_dir",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@variables('core_file_name')",
+										"type": "Expression"
+									},
+									"container": {
+										"value": "@pipeline().parameters.core_container",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "web",
+						"description": "削除情報ファイルに一時ファイルと基軸ファイルの情報を設定するアクティビティ",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "TEST_DATA_COPY",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PUT",
+							"headers": {
+								"x-ms-version": "2024-11-04",
+								"x-ms-meta-tmp": {
+									"value": "@pipeline().parameters.tmp_file_name",
+									"type": "Expression"
+								},
+								"x-ms-blob-type": "BlockBlob"
+							},
+							"disableCertValidation": true,
+							"turnOffAsync": false,
+							"url": {
+								"value": "@concat('https://',pipeline().parameters.blob_name,'.blob.core.windows.net/',concat(pipeline().parameters.tmp_dir,'_DEL'),'/DEL_INFO')",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@concat('imp:',pipeline().parameters.core_container,'/',pipeline().parameters.core_dir,'/',variables('core_file_name'))",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://storage.azure.com/"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"tmp_dir": {
+						"type": "string"
+					},
+					"tmp_file_name": {
+						"type": "string"
+					},
+					"tmp_file_column_delimiter": {
+						"type": "string",
+						"defaultValue": ","
+					},
+					"tmp_file_encoding": {
+						"type": "string",
+						"defaultValue": "SHIFT-JIS"
+					},
+					"tmp_file_quote_char": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"tmp_file_escape_char": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"tmp_file_first_row_header": {
+						"type": "bool",
+						"defaultValue": true
+					},
+					"tmp_null_value": {
+						"type": "string"
+					},
+					"core_container": {
+						"type": "string",
+						"defaultValue": "input"
+					},
+					"core_dir": {
+						"type": "string",
+						"defaultValue": "core/IFA"
+					},
+					"blob_name": {
+						"type": "string",
+						"defaultValue": "20250110mis"
+					}
+				},
+				"variables": {
+					"core_file_name": {
+						"type": "String",
+						"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.tmp_file_name, '.'), -1) , pipeline().parameters.tmp_file_name,substring(pipeline().parameters.tmp_file_name, 0, lastIndexOf(pipeline().parameters.tmp_file_name, '.'))),'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-11T06:46:42Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FIX_FROM_STOREGY_3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "取込側変換パイプライン",
+				"activities": [
+					{
+						"name": "TEST_DATA_COPY",
+						"description": "一時ファイルから基軸ファイルを作成し、取込側基軸ファイル領域に格納するアクティビティ",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "from_storage_activity_copy_from_20250109",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": {
+										"value": "@replace(pipeline().parameters.tmp_dir, 'input/','')",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@pipeline().parameters.tmp_file_name",
+										"type": "Expression"
+									},
+									"file_column_delimiter": {
+										"value": "@pipeline().parameters.tmp_file_column_delimiter",
+										"type": "Expression"
+									},
+									"file_encoding": {
+										"value": "@pipeline().parameters.tmp_file_encoding",
+										"type": "Expression"
+									},
+									"file_quote_char": {
+										"value": "@pipeline().parameters.tmp_file_quote_char",
+										"type": "Expression"
+									},
+									"file_escape_char": {
+										"value": "@pipeline().parameters.tmp_file_escape_char",
+										"type": "Expression"
+									},
+									"file_first_row_header": {
+										"value": "@pipeline().parameters.tmp_file_first_row_header",
+										"type": "Expression"
+									},
+									"null_value": {
+										"value": "@pipeline().parameters.tmp_null_value",
+										"type": "Expression"
+									},
+									"container": {
+										"value": "@pipeline().parameters.core_container",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "from_storage_activity_copy_to_20250109",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": {
+										"value": "@pipeline().parameters.core_dir",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@variables('core_file_name')",
+										"type": "Expression"
+									},
+									"container": {
+										"value": "@pipeline().parameters.core_container",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "web",
+						"description": "削除情報ファイルに一時ファイルと基軸ファイルの情報を設定するアクティビティ",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "TEST_DATA_COPY",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PUT",
+							"headers": {
+								"x-ms-version": "2024-11-04",
+								"x-ms-meta-tmp": {
+									"value": "@pipeline().parameters.tmp_file_name",
+									"type": "Expression"
+								},
+								"x-ms-blob-type": "BlockBlob"
+							},
+							"disableCertValidation": true,
+							"turnOffAsync": false,
+							"url": {
+								"value": "@concat('https://20250219mis.blob.core.windows.net/',concat(pipeline().parameters.tmp_dir,'_DEL'),'/DEL_INFO')",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@concat('imp:',pipeline().parameters.core_container,'/',pipeline().parameters.core_dir,'/',variables('core_file_name'))",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://storage.azure.com/"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "input/tmp/CXFT000101"
+					},
+					"tmp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"tmp_file_column_delimiter": {
+						"type": "string",
+						"defaultValue": ","
+					},
+					"tmp_file_encoding": {
+						"type": "string",
+						"defaultValue": "SHIFT-JIS"
+					},
+					"tmp_file_quote_char": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"tmp_file_escape_char": {
+						"type": "string",
+						"defaultValue": "\""
+					},
+					"tmp_file_first_row_header": {
+						"type": "bool",
+						"defaultValue": true
+					},
+					"tmp_null_value": {
+						"type": "string"
+					},
+					"core_container": {
+						"type": "string",
+						"defaultValue": "input"
+					},
+					"core_dir": {
+						"type": "string",
+						"defaultValue": "core/IFB"
+					}
+				},
+				"variables": {
+					"core_file_name": {
+						"type": "String",
+						"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.tmp_file_name, '.'), -1) , pipeline().parameters.tmp_file_name,substring(pipeline().parameters.tmp_file_name, 0, lastIndexOf(pipeline().parameters.tmp_file_name, '.'))),'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-28T02:56:49Z"
+			},
+			"dependsOn": []
+		}
+	]
+}

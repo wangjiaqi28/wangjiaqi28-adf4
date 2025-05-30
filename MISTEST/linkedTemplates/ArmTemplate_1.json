@@ -1,0 +1,1448 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "データ ファクトリ名",
+			"defaultValue": "MISTEST"
+		},
+		"wjq_test_fun_linkservice_functionKey": {
+			"type": "secureString",
+			"metadata": "'wjq_test_fun_linkservice' の 'functionKey' のセキュリティで保護された文字列"
+		},
+		"wjq_test_serviceNow_password": {
+			"type": "secureString",
+			"metadata": "'wjq_test_serviceNow' の 'password' のセキュリティで保護された文字列"
+		},
+		"wjq_test_sftp_link_service_password": {
+			"type": "secureString",
+			"metadata": "'wjq_test_sftp_link_service' の 'password' のセキュリティで保護された文字列"
+		},
+		"wj_test_linkservice_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://20250110mis.blob.core.windows.net/"
+		},
+		"wjq_test_fun_linkservice_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://misfun3.azurewebsites.net"
+		},
+		"wjq_test_serviceNow_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "@{linkedService().sn_user_name}"
+		},
+		"wjq_test_serviceNow_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "@{linkedService().sn_user_name}"
+		},
+		"wjq_test_sftp_link_service_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "123"
+		},
+		"wjq_test_sftp_link_service_properties_typeProperties_hostKeyFingerprint": {
+			"type": "string",
+			"defaultValue": "123"
+		},
+		"wjq_test_sftp_link_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "123"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/wj_test_linkservice')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('wj_test_linkservice_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_fun_linkservice')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('wjq_test_fun_linkservice_properties_typeProperties_functionAppUrl')]",
+					"authentication": "MSI",
+					"resourceId": "402b4ecb-a2cb-4e03-a7af-76524640bf0d",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('wjq_test_fun_linkservice_functionKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_serviceNow')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"sn_url": {
+						"type": "string"
+					},
+					"sn_user_name": {
+						"type": "string"
+					},
+					"sn_secret": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "ServiceNowV2",
+				"typeProperties": {
+					"endpoint": "[parameters('wjq_test_serviceNow_properties_typeProperties_endpoint')]",
+					"authenticationType": "Basic",
+					"username": "[parameters('wjq_test_serviceNow_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('wjq_test_serviceNow_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_test_sftp_link_service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"testPram": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Sftp",
+				"typeProperties": {
+					"host": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_host')]",
+					"port": 22,
+					"skipHostKeyValidation": false,
+					"hostKeyFingerprint": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_hostKeyFingerprint')]",
+					"authenticationType": "Basic",
+					"userName": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('wjq_test_sftp_link_service_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "Japan East",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FIX_FROM_STORAGE_GET_SFTP')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "get_file_from_sftp",
+							"body": "",
+							"headers": {
+								"sftp_host": {
+									"value": "@pipeline().parameters.sftp_host",
+									"type": "Expression"
+								},
+								"sftp_port": {
+									"value": "@pipeline().parameters.sftp_port",
+									"type": "Expression"
+								},
+								"sftp_username": {
+									"value": "@pipeline().parameters.sftp_username",
+									"type": "Expression"
+								},
+								"sftp_filepath": {
+									"value": "@pipeline().parameters.sftp_filepath",
+									"type": "Expression"
+								},
+								"blob_container": {
+									"value": "@pipeline().parameters.blob_container",
+									"type": "Expression"
+								},
+								"blob_name": {
+									"value": "@pipeline().parameters.blob_name",
+									"type": "Expression"
+								},
+								"key_vault_name": {
+									"value": "@pipeline().parameters.key_vault_name",
+									"type": "Expression"
+								},
+								"secret_name": {
+									"value": "@pipeline().parameters.secret_name",
+									"type": "Expression"
+								},
+								"account_storage_name": {
+									"value": "@pipeline().parameters.account_storage_name",
+									"type": "Expression"
+								}
+							},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"sftp_host": {
+						"type": "string",
+						"defaultValue": "20250312sftp.blob.core.windows.net"
+					},
+					"sftp_port": {
+						"type": "string",
+						"defaultValue": "22"
+					},
+					"sftp_username": {
+						"type": "string",
+						"defaultValue": "20250312sftp.azuresftp"
+					},
+					"sftp_filepath": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"blob_container": {
+						"type": "string",
+						"defaultValue": "input"
+					},
+					"blob_name": {
+						"type": "string",
+						"defaultValue": "tmp/testSFTP2.csv"
+					},
+					"key_vault_name": {
+						"type": "string",
+						"defaultValue": "mis-key-vaule"
+					},
+					"secret_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"account_storage_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-12T09:46:34Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0024-pipeline01-old')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "http_trigger_ssh_sftp",
+							"body": "",
+							"headers": {
+								"sftp_host": {
+									"value": "@pipeline().parameters.sftp_host",
+									"type": "Expression"
+								},
+								"sftp_port": {
+									"value": "@pipeline().parameters.sftp_port",
+									"type": "Expression"
+								},
+								"sftp_user_name": {
+									"value": "@pipeline().parameters.sftp_user_name",
+									"type": "Expression"
+								},
+								"sftp_key_vault_name": {
+									"value": "@pipeline().parameters.sftp_key_vault_name",
+									"type": "Expression"
+								},
+								"sftp_secret": {
+									"value": "@pipeline().parameters.sftp_secret",
+									"type": "Expression"
+								},
+								"sftp_file_name": {
+									"value": "@pipeline().parameters.sftp_file_name",
+									"type": "Expression"
+								},
+								"sftp_dir": {
+									"value": "@pipeline().parameters.sftp_dir",
+									"type": "Expression"
+								},
+								"tmp_blob_name": {
+									"value": "@pipeline().parameters.tmp_blob_name",
+									"type": "Expression"
+								},
+								"tmp_container": {
+									"value": "@pipeline().parameters.tmp_container",
+									"type": "Expression"
+								},
+								"tmp_dir": {
+									"value": "@pipeline().parameters.tmp_dir",
+									"type": "Expression"
+								}
+							},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"sftp_host": {
+						"type": "string",
+						"defaultValue": "20250312sftp.blob.core.windows.net"
+					},
+					"sftp_port": {
+						"type": "string",
+						"defaultValue": "22"
+					},
+					"sftp_user_name": {
+						"type": "string",
+						"defaultValue": "20250312sftp.azuresftp"
+					},
+					"sftp_dir": {
+						"type": "string"
+					},
+					"sftp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"sftp_secret": {
+						"type": "string",
+						"defaultValue": "sftp-ssh-key"
+					},
+					"sftp_key_vault_name": {
+						"type": "string",
+						"defaultValue": "mis-key-value"
+					},
+					"tmp_blob_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"tmp_container": {
+						"type": "string",
+						"defaultValue": "input"
+					},
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "tmp/CXFT000101"
+					}
+				},
+				"folder": {
+					"name": "SAMPLE"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-12T06:42:08Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0024-pipeline01')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTIMP0024-pipeline01-azureFunction01",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "get_daily_file_from_ftp",
+							"headers": {
+								"ftp_host": {
+									"value": "@pipeline().parameters.ftp_host",
+									"type": "Expression"
+								},
+								"ftp_port": {
+									"value": "@pipeline().parameters.ftp_port",
+									"type": "Expression"
+								},
+								"ftp_user_name": {
+									"value": "@pipeline().parameters.ftp_user_name",
+									"type": "Expression"
+								},
+								"ftp_dir": {
+									"value": "@pipeline().parameters.ftp_dir",
+									"type": "Expression"
+								},
+								"ftp_file_name": {
+									"value": "@pipeline().parameters.ftp_file_name",
+									"type": "Expression"
+								},
+								"ftp_secret": {
+									"value": "@pipeline().parameters.ftp_secret",
+									"type": "Expression"
+								},
+								"ftp_key_vault_name": {
+									"value": "@pipeline().parameters.ftp_key_vault_name",
+									"type": "Expression"
+								},
+								"tmp_blob_name": {
+									"value": "@pipeline().parameters.tmp_blob_name",
+									"type": "Expression"
+								},
+								"tmp_container": {
+									"value": "@pipeline().parameters.tmp_container",
+									"type": "Expression"
+								},
+								"tmp_dir": {
+									"value": "@pipeline().parameters.tmp_dir",
+									"type": "Expression"
+								}
+							},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ftp_host": {
+						"type": "string",
+						"defaultValue": "20250312sftp.blob.core.windows.net"
+					},
+					"ftp_port": {
+						"type": "string",
+						"defaultValue": "22"
+					},
+					"ftp_user_name": {
+						"type": "string",
+						"defaultValue": "20250312sftp.azuresftp"
+					},
+					"ftp_dir": {
+						"type": "string"
+					},
+					"ftp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"ftp_secret": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"ftp_key_vault_name": {
+						"type": "string",
+						"defaultValue": "mis-key-value"
+					},
+					"tmp_blob_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"tmp_container": {
+						"type": "string",
+						"defaultValue": "miraicontainer01"
+					},
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "tmp/CXFT000101"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-11T09:27:27Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0024-pipeline01_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTIMP0024-pipeline01-azureFunction01",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "get_file_from_sftp",
+							"headers": {
+								"sftp_host": {
+									"value": "@pipeline().parameters.sftp_host",
+									"type": "Expression"
+								},
+								"sftp_port": {
+									"value": "@pipeline().parameters.sftp_port",
+									"type": "Expression"
+								},
+								"sftp_user_name": {
+									"value": "@pipeline().parameters.sftp_user_name",
+									"type": "Expression"
+								},
+								"sftp_dir": {
+									"value": "@pipeline().parameters.sftp_dir",
+									"type": "Expression"
+								},
+								"sftp_file_name": {
+									"value": "@pipeline().parameters.sftp_file_name",
+									"type": "Expression"
+								},
+								"sftp_secret": {
+									"value": "@pipeline().parameters.sftp_secret",
+									"type": "Expression"
+								},
+								"sftp_key_vault_name": {
+									"value": "@pipeline().parameters.sftp_key_vault_name",
+									"type": "Expression"
+								},
+								"tmp_blob_name": {
+									"value": "@pipeline().parameters.tmp_blob_name",
+									"type": "Expression"
+								},
+								"tmp_container": {
+									"value": "@pipeline().parameters.tmp_container",
+									"type": "Expression"
+								},
+								"tmp_dir": {
+									"value": "@pipeline().parameters.tmp_dir",
+									"type": "Expression"
+								}
+							},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"sftp_host": {
+						"type": "string",
+						"defaultValue": "20250312sftp.blob.core.windows.net"
+					},
+					"sftp_port": {
+						"type": "string",
+						"defaultValue": "22"
+					},
+					"sftp_user_name": {
+						"type": "string",
+						"defaultValue": "20250312sftp.azuresftp"
+					},
+					"sftp_dir": {
+						"type": "string"
+					},
+					"sftp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"sftp_secret": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"sftp_key_vault_name": {
+						"type": "string",
+						"defaultValue": "mis-key-value"
+					},
+					"tmp_blob_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"tmp_container": {
+						"type": "string",
+						"defaultValue": "miraicontainer01"
+					},
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "tmp/CXFT000101"
+					}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-20T05:00:03Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0025-pipeline01')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTIMP0025-pipeline01-azureFunction01",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "http_trigger_sftp",
+							"headers": {
+								"sftp_host": {
+									"value": "@pipeline().parameters.ftp_host",
+									"type": "Expression"
+								},
+								"sftp_port": {
+									"value": "@pipeline().parameters.ftp_port",
+									"type": "Expression"
+								},
+								"sftp_user_name": {
+									"value": "@pipeline().parameters.ftp_user_name",
+									"type": "Expression"
+								},
+								"sftp_dir": {
+									"value": "@pipeline().parameters.ftp_dir",
+									"type": "Expression"
+								},
+								"sftp_file_name": {
+									"value": "@pipeline().parameters.ftp_file_name",
+									"type": "Expression"
+								},
+								"sftp_secret": {
+									"value": "@pipeline().parameters.ftp_secret",
+									"type": "Expression"
+								},
+								"sftp_key_vault_name": {
+									"value": "@pipeline().parameters.ftp_key_vault_name",
+									"type": "Expression"
+								},
+								"tmp_blob_name": {
+									"value": "@pipeline().parameters.tmp_blob_name",
+									"type": "Expression"
+								},
+								"tmp_container": {
+									"value": "@pipeline().parameters.tmp_container",
+									"type": "Expression"
+								},
+								"tmp_dir": {
+									"value": "@pipeline().parameters.tmp_dir",
+									"type": "Expression"
+								}
+							},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ftp_host": {
+						"type": "string"
+					},
+					"ftp_port": {
+						"type": "string"
+					},
+					"ftp_user_name": {
+						"type": "string"
+					},
+					"ftp_dir": {
+						"type": "string",
+						"defaultValue": "tkac/cx/daily/cxftp0081"
+					},
+					"ftp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT008101"
+					},
+					"ftp_secret": {
+						"type": "string",
+						"defaultValue": "mirai-sftp-pw"
+					},
+					"ftp_key_vault_name": {
+						"type": "string",
+						"defaultValue": "SCP-1-KeyVault-001-Dev"
+					},
+					"tmp_blob_name": {
+						"type": "string",
+						"defaultValue": "scpblobdev01"
+					},
+					"tmp_container": {
+						"type": "string",
+						"defaultValue": "miraicontainer01"
+					},
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "tmp"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-01T02:34:54Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/http_trigger_blob_update')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "http_trigger_blob_update",
+							"body": {
+								"value": "@pipeline().parameters.field_lengths",
+								"type": "Expression"
+							},
+							"headers": {
+								"account_name": {
+									"value": "@pipeline().parameters.blob_name",
+									"type": "Expression"
+								},
+								"container_name": {
+									"value": "@pipeline().parameters.container_name",
+									"type": "Expression"
+								},
+								"source_file_dir": {
+									"value": "@replace(pipeline().parameters.tmp_dir,'input/','') ",
+									"type": "Expression"
+								},
+								"source_file_name": {
+									"value": "@pipeline().parameters.tmp_file_name",
+									"type": "Expression"
+								},
+								"out_file_dir": {
+									"value": "@replace(pipeline().parameters.tmp_dir,'input/','') ",
+									"type": "Expression"
+								},
+								"out_file_name": {
+									"value": "@pipeline().parameters.out_file_name",
+									"type": "Expression"
+								}
+							},
+							"method": "POST"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"blob_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"container_name": {
+						"type": "string",
+						"defaultValue": "input"
+					},
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "tmp/CXFT000101"
+					},
+					"tmp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"out_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101.csv"
+					},
+					"field_lengths": {
+						"type": "string",
+						"defaultValue": {
+							"field_lengths": [
+								10,
+								1,
+								16,
+								15,
+								16,
+								35,
+								35,
+								35,
+								35,
+								60,
+								3,
+								35,
+								35,
+								35,
+								80,
+								35,
+								35,
+								35,
+								35,
+								10,
+								16,
+								3,
+								8,
+								4,
+								4,
+								11,
+								11,
+								11,
+								132,
+								10,
+								1,
+								1,
+								1,
+								1,
+								10,
+								2,
+								11,
+								1,
+								1,
+								1,
+								4,
+								16,
+								4,
+								4,
+								4,
+								40,
+								8,
+								10,
+								1,
+								10,
+								8,
+								1,
+								1,
+								6,
+								2,
+								1,
+								5,
+								3,
+								1,
+								10,
+								10,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								8,
+								12,
+								8,
+								12,
+								1,
+								1
+							]
+						}
+					}
+				},
+				"folder": {
+					"name": "SAMPLE"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-07T03:17:14Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline12')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "http_trigger_test_connection",
+							"headers": {},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "TEST"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-28T02:56:50Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline15')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTIMP0024-pipeline02-azureFunction01",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "convert_fixed_length_to_csv",
+							"body": {
+								"value": "@pipeline().parameters.column_widths",
+								"type": "Expression"
+							},
+							"headers": {
+								"account_name": "20250219mis",
+								"source_file_dir": "miraicontainer01/tmp/CXFT000101",
+								"source_file_name": "CXFT000101",
+								"work_file_dir": "core/CXFT000101",
+								"work_file_name": "CXFT000101_WK.csv"
+							},
+							"method": "POST"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"column_widths": {
+						"type": "string",
+						"defaultValue": {
+							"column_widths": [
+								10,
+								1,
+								16,
+								15,
+								16,
+								35,
+								35,
+								35,
+								35,
+								60,
+								3,
+								35,
+								35,
+								35,
+								80,
+								35,
+								35,
+								35,
+								35,
+								10,
+								16,
+								3,
+								8,
+								4,
+								4,
+								11,
+								11,
+								11,
+								132,
+								10,
+								1,
+								1,
+								1,
+								1,
+								10,
+								2,
+								11,
+								1,
+								1,
+								1,
+								4,
+								16,
+								4,
+								4,
+								4,
+								40,
+								8,
+								10,
+								1,
+								10,
+								8,
+								1,
+								1,
+								6,
+								2,
+								1,
+								5,
+								3,
+								1,
+								10,
+								10,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								8,
+								12,
+								8,
+								12,
+								1,
+								1
+							]
+						}
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-15T03:09:22Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline9')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "http_trigger_test_connection",
+							"headers": {},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-11T09:27:27Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sample_test1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "true",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Execute Pipeline1",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "sample_test2",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-05-12T06:17:19Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/wjq_fun_test')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Function1",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "http_trigger_test_connection",
+							"headers": {},
+							"method": "GET"
+						},
+						"linkedServiceName": {
+							"referenceName": "wjq_test_fun_linkservice",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "SAMPLE"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-17T08:22:50Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/wjq_test_fun_linkservice')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "nrtutestb8ff_link_service",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250422",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						},
+						"container": "imp"
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250422",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						},
+						"container": "sup"
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Optimal"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0017_pipeline01_dataset01')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "wjq_test_sftp_link_service",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"testPram": "1231"
+					}
+				},
+				"parameters": {
+					"sftp_host": {
+						"type": "string"
+					},
+					"sftp_port": {
+						"type": "string"
+					},
+					"sftp_user_name": {
+						"type": "string"
+					},
+					"sftp_secret": {
+						"type": "string"
+					},
+					"dir": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					},
+					"file_column_delimiter": {
+						"type": "string"
+					},
+					"file_encoding": {
+						"type": "string"
+					},
+					"file_quote_char": {
+						"type": "string"
+					},
+					"file_escape_char": {
+						"type": "string"
+					},
+					"file_first_row_header": {
+						"type": "bool"
+					},
+					"null_value": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "SftpLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().dir",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": {
+						"value": "@dataset().file_column_delimiter",
+						"type": "Expression"
+					},
+					"encodingName": {
+						"value": "@dataset().file_encoding",
+						"type": "Expression"
+					},
+					"escapeChar": {
+						"value": "@dataset().file_escape_char",
+						"type": "Expression"
+					},
+					"firstRowAsHeader": {
+						"value": "@dataset().file_first_row_header",
+						"type": "Expression"
+					},
+					"nullValue": {
+						"value": "@dataset().null_value",
+						"type": "Expression"
+					},
+					"quoteChar": {
+						"value": "@dataset().file_quote_char",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/wjq_test_sftp_link_service')]"
+			]
+		}
+	]
+}

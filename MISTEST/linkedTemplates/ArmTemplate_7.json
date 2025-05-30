@@ -1,0 +1,1091 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "データ ファクトリ名",
+			"defaultValue": "MISTEST"
+		},
+		"trigger4_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/MIS_TEST/providers/Microsoft.Storage/storageAccounts/storageaccountimp2"
+		},
+		"triggerSFTP_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"trigger_to_storage_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"trigger_to_storage_2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"storeagy_delete_by_metadata_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"SBTIMP0024-pipeline02-trigger01_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger4')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline3",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/test/aa/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger4_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/triggerSFTP')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "FIX_TO_STOREGY_P2",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/test2/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('triggerSFTP_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger_to_storage')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "FIX_FROM_STOREGY_3",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/tmp/CXFT000101",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger_to_storage_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger_to_storage_2')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "FIX_TO_STOREGY_P2",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/output/blobs/core/CXFT000101",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger_to_storage_2_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTSUP0024-pipeline01')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTSUP0024-pipeline01-excutePipeline01",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "SBTSUP0024-pipeline01-copy01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "SBTSUP0024-pipeline02",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"core_dir": {
+									"value": "@pipeline().parameters.core_dir",
+									"type": "Expression"
+								},
+								"core_file_name": {
+									"value": "@pipeline().parameters.core_file_name",
+									"type": "Expression"
+								},
+								"del_info_file": {
+									"value": "@pipeline().parameters.del_info_file",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "SBTSUP0024-pipeline01-copy01",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SBTSUP0024_pipeline01_dataset01",
+								"type": "DatasetReference",
+								"parameters": {
+									"core_dir": "@pipeline().parameters.core_dir",
+									"core_file_name": "@pipeline().parameters.core_file_name"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SBTSUP0024_pipeline01_dataset02",
+								"type": "DatasetReference",
+								"parameters": {
+									"core_dir": "@pipeline().parameters.core_dir",
+									"core_file_name": "@pipeline().parameters.core_file_name"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"core_dir": {
+						"type": "string",
+						"defaultValue": "core/CXFT000101"
+					},
+					"core_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101_SC20250312-185811.csv"
+					},
+					"del_info_file": {
+						"type": "string",
+						"defaultValue": "https://20250219mis.blob.core.windows.net/miraicontainer01/tmp/CXFT000101_DEL/DEL_INFO"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-13T03:24:45Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTSUP0025-pipeline01')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTSUP0025-pipeline01-copy01",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SBTSUP0025_pipeline01_dataset01",
+								"type": "DatasetReference",
+								"parameters": {
+									"core_dir": {
+										"value": "@pipeline().parameters.core_dir",
+										"type": "Expression"
+									},
+									"core_file_name": {
+										"value": "@pipeline().parameters.core_file_name",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SBTSUP0025_pipeline01_dataset02",
+								"type": "DatasetReference",
+								"parameters": {
+									"core_dir": "@pipeline().parameters.core_dir",
+									"core_file_name": "@pipeline().parameters.core_file_name"
+								}
+							}
+						]
+					},
+					{
+						"name": "SBTSUP0025-pipeline01-excutePipeline01",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "SBTSUP0025-pipeline01-copy01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "SBTSUP0025-pipeline02",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"core_dir": {
+									"value": "@pipeline().parameters.core_dir",
+									"type": "Expression"
+								},
+								"core_file_name": {
+									"value": "@pipeline().parameters.core_file_name",
+									"type": "Expression"
+								},
+								"del_info_file": {
+									"value": "@pipeline().parameters.del_info_file",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"core_dir": {
+						"type": "string"
+					},
+					"core_file_name": {
+						"type": "string"
+					},
+					"del_info_file": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-27T06:40:15Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0025-pipeline02-trigger01')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "SBTIMP0025-pipeline02",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"tmp_dir": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_dir')]",
+							"tmp_file_name": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_file_name')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/miraicontainer01/blobs/tmp/CXFT008101/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storeagy_delete_by_metadata')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ファイル削除パイプライン起動のための削除トリガー",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "FIX_DELETE_01",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"tmp_dir": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir')]",
+							"tmp_file_name": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name')]"
+						}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "FIX_DELETE_02",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"del_file_dir": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir')]",
+							"container": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/",
+					"blobPathEndsWith": "tmp/*",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('storeagy_delete_by_metadata_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobDeleted"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0024-pipeline02')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SBTIMP0024-pipeline02-getMetadata01",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "SBTIMP0024_pipeline02_dataset01",
+								"type": "DatasetReference",
+								"parameters": {
+									"dir": "@pipeline().parameters.core_all_dir",
+									"file_name": "*"
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "SBTIMP0024-pipeline02-foreach01",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SBTIMP0024-pipeline02-getMetadata01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('SBTIMP0024-pipeline02-getMetadata01').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "SBTIMP0024-pipeline02-ifCondition01",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@or(empty(variables('last_file_name')),\nand( \n    contains(\n        item().name, '_SC'),\n        greaterOrEquals(\n            replace(substring(item().name,add(lastIndexOf(item().name, '_SC'), 3), 15), '-', ''), \n            replace(substring(variables('last_file_name'),add(lastIndexOf(variables('last_file_name'), '_SC'), 3), 15), '-', '')\n            )\n))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "SBTIMP0024-pipeline02-setVariable01",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "last_file_name",
+													"value": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "SBTIMP0024-pipeline02-azureFunction01",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [
+							{
+								"activity": "SBTIMP0024-pipeline02-foreach01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "convert_fixed_length_to_csv",
+							"body": {
+								"value": "@pipeline().parameters.column_widths",
+								"type": "Expression"
+							},
+							"headers": {
+								"account_name": {
+									"value": "@pipeline().parameters.blob_name",
+									"type": "Expression"
+								},
+								"source_file_dir": {
+									"value": "@pipeline().parameters.tmp_dir",
+									"type": "Expression"
+								},
+								"source_file_name": {
+									"value": "@pipeline().parameters.tmp_file_name",
+									"type": "Expression"
+								},
+								"work_file_dir": {
+									"value": "@pipeline().parameters.core_diff_dir",
+									"type": "Expression"
+								},
+								"work_file_name": {
+									"value": "@pipeline().parameters.work_file_name",
+									"type": "Expression"
+								}
+							},
+							"method": "POST"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureFunction1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "SBTIMP0024-pipeline02-callDataFlow01",
+						"description": "変換、差分ファイル",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SBTIMP0024-pipeline02-azureFunction01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SBTIMP0024_pipeline02_dataFlow01",
+								"type": "DataFlowReference",
+								"parameters": {
+									"core_diff_file_name": {
+										"value": "'@{variables('core_diff_file_name')}'",
+										"type": "Expression"
+									},
+									"core_all_file_name": {
+										"value": "'@{variables('core_all_file_name')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SBTIMP0024Pipeline02DataFlow01Source02": {
+										"dir": {
+											"value": "@pipeline().parameters.core_all_dir",
+											"type": "Expression"
+										},
+										"file_name": {
+											"value": "@variables('last_file_name')",
+											"type": "Expression"
+										}
+									},
+									"SBTIMP0024Pipeline02DataFlow01Source01": {
+										"dir": {
+											"value": "@pipeline().parameters.core_diff_dir",
+											"type": "Expression"
+										},
+										"file_name": {
+											"value": "@pipeline().parameters.work_file_name",
+											"type": "Expression"
+										},
+										"file_column_delimiter": "@pipeline().parameters.tmp_file_column_delimiter",
+										"file_encoding": {
+											"value": "@pipeline().parameters.tmp_file_encoding",
+											"type": "Expression"
+										},
+										"file_quote_char": {
+											"value": "@pipeline().parameters.tmp_file_quote_char",
+											"type": "Expression"
+										},
+										"file_escape_char": {
+											"value": "@pipeline().parameters.tmp_file_escape_char",
+											"type": "Expression"
+										},
+										"file_first_row_header": {
+											"value": "@pipeline().parameters.tmp_file_first_row_header",
+											"type": "Expression"
+										},
+										"null_value": {
+											"value": "@pipeline().parameters.tmp_null_value",
+											"type": "Expression"
+										}
+									},
+									"SBTIMP0024Pipeline02DataFlow01Sink01": {
+										"dir": {
+											"value": "@pipeline().parameters.core_diff_dir",
+											"type": "Expression"
+										},
+										"file_name": "*"
+									},
+									"SBTIMP0024Pipeline02DataFlow01Sink02": {
+										"dir": {
+											"value": "@pipeline().parameters.core_all_dir",
+											"type": "Expression"
+										},
+										"file_name": "*"
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "SBTIMP0024-pipeline02-web01",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "SBTIMP0024-pipeline02-callDataFlow01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PUT",
+							"headers": {
+								"x-ms-version": "2024-11-04",
+								"x-ms-blob-type": "BlockBlob",
+								"x-ms-meta-tmp": {
+									"value": "@pipeline().parameters.tmp_file_name",
+									"type": "Expression"
+								}
+							},
+							"disableCertValidation": true,
+							"turnOffAsync": false,
+							"url": {
+								"value": "@concat('https://',pipeline().parameters.blob_name,'.blob.core.windows.net/',pipeline().parameters.tmp_dir,'_DEL/DEL_INFO')",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@concat('imp:miraicontainer01/',pipeline().parameters.core_diff_dir,'/',variables('core_diff_file_name'),\ndecodeUriComponent('%0D%0A'),\n'imp:miraicontainer01/',pipeline().parameters.core_all_dir,'/',variables('core_all_file_name')\n)",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://storage.azure.com/"
+							}
+						}
+					},
+					{
+						"name": "SBTIMP0024-pipeline02-excutePipeline01",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "SBTIMP0024-pipeline02-web01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "SBTSUP0024-pipeline01",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"core_dir": {
+									"value": "@pipeline().parameters.core_diff_dir",
+									"type": "Expression"
+								},
+								"core_file_name": {
+									"value": "@variables('core_diff_file_name')",
+									"type": "Expression"
+								},
+								"del_info_file": {
+									"value": "@concat('https://',pipeline().parameters.blob_name,'.blob.core.windows.net/',pipeline().parameters.tmp_dir,'_DEL/DEL_INFO')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "SBTIMP0024-pipeline02-excutePipeline02",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "SBTIMP0024-pipeline02-excutePipeline01",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "SBTSUP0025-pipeline01",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"core_dir": {
+									"value": "@pipeline().parameters.core_all_dir",
+									"type": "Expression"
+								},
+								"core_file_name": {
+									"value": "@variables('core_all_file_name')",
+									"type": "Expression"
+								},
+								"del_info_file": {
+									"value": "@concat('https://',pipeline().parameters.blob_name,'.blob.core.windows.net/',pipeline().parameters.tmp_dir,'_DEL/DEL_INFO')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"tmp_dir": {
+						"type": "string",
+						"defaultValue": "miraicontainer01/tmp/CXFT000101"
+					},
+					"tmp_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101"
+					},
+					"tmp_file_column_delimiter": {
+						"type": "string",
+						"defaultValue": ","
+					},
+					"tmp_file_encoding": {
+						"type": "string",
+						"defaultValue": "SHIFT-JIS"
+					},
+					"tmp_file_quote_char": {
+						"type": "string"
+					},
+					"tmp_file_escape_char": {
+						"type": "string"
+					},
+					"tmp_file_first_row_header": {
+						"type": "bool",
+						"defaultValue": false
+					},
+					"tmp_null_value": {
+						"type": "string"
+					},
+					"core_diff_dir": {
+						"type": "string",
+						"defaultValue": "core/CXFT000101"
+					},
+					"core_all_dir": {
+						"type": "string",
+						"defaultValue": "core/CXFT008101"
+					},
+					"core_all_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT008101"
+					},
+					"blob_name": {
+						"type": "string",
+						"defaultValue": "20250219mis"
+					},
+					"work_file_name": {
+						"type": "string",
+						"defaultValue": "CXFT000101_WK.csv"
+					},
+					"column_widths": {
+						"type": "string",
+						"defaultValue": {
+							"column_widths": [
+								10,
+								1,
+								16,
+								15,
+								16,
+								35,
+								35,
+								35,
+								35,
+								60,
+								3,
+								35,
+								35,
+								35,
+								80,
+								35,
+								35,
+								35,
+								35,
+								10,
+								16,
+								3,
+								8,
+								4,
+								4,
+								11,
+								11,
+								11,
+								132,
+								10,
+								1,
+								1,
+								1,
+								1,
+								10,
+								2,
+								11,
+								1,
+								1,
+								1,
+								4,
+								16,
+								4,
+								4,
+								4,
+								40,
+								8,
+								10,
+								1,
+								10,
+								8,
+								1,
+								1,
+								6,
+								2,
+								1,
+								5,
+								3,
+								1,
+								10,
+								10,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								8,
+								12,
+								8,
+								12,
+								1,
+								1
+							]
+						}
+					}
+				},
+				"variables": {
+					"last_file_name": {
+						"type": "String"
+					},
+					"core_diff_file_name": {
+						"type": "String",
+						"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.tmp_file_name, '.'), -1) , pipeline().parameters.tmp_file_name,substring(pipeline().parameters.tmp_file_name, 0, lastIndexOf(pipeline().parameters.tmp_file_name, '.'))) ,'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+					},
+					"core_all_file_name": {
+						"type": "String",
+						"defaultValue": "@concat(if(equals(lastIndexOf(pipeline().parameters.core_all_file_name, '.'), -1) , pipeline().parameters.core_all_file_name,substring(pipeline().parameters.core_all_file_name, 0, lastIndexOf(pipeline().parameters.core_all_file_name, '.'))) ,'_SC',formatDateTime(addhours(utcNow(),9),'yyyyMMdd-HHmmss'),'.csv')"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-10T06:36:04Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SBTSUP0024-pipeline01')]",
+				"[concat(variables('factoryId'), '/pipelines/SBTSUP0025-pipeline01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0024-pipeline02-trigger01')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "SBTIMP0024-pipeline02",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"tmp_dir": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir')]",
+							"tmp_file_name": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_file_name')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/miraicontainer01/blobs/tmp/CXFT000101/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SBTIMP0024-pipeline02')]"
+			]
+		}
+	]
+}

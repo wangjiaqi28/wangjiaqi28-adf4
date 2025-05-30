@@ -1,0 +1,588 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "データ ファクトリ名",
+			"defaultValue": "MISTEST"
+		},
+		"AzureFunction1_functionKey": {
+			"type": "secureString",
+			"metadata": "'AzureFunction1' の 'functionKey' のセキュリティで保護された文字列"
+		},
+		"Sftp_TEST_password": {
+			"type": "secureString",
+			"metadata": "'Sftp_TEST' の 'password' のセキュリティで保護された文字列"
+		},
+		"mis_link_service_20250312_connectionString": {
+			"type": "secureString",
+			"metadata": "'mis_link_service_20250312' の 'connectionString' のセキュリティで保護された文字列"
+		},
+		"mis_link_service_20250422_connectionString": {
+			"type": "secureString",
+			"metadata": "'mis_link_service_20250422' の 'connectionString' のセキュリティで保護された文字列"
+		},
+		"nrtutest9ce5_link_service_connectionString": {
+			"type": "secureString",
+			"metadata": "'nrtutest9ce5_link_service' の 'connectionString' のセキュリティで保護された文字列"
+		},
+		"nrtutestb8ff_link_service_connectionString": {
+			"type": "secureString",
+			"metadata": "'nrtutestb8ff_link_service' の 'connectionString' のセキュリティで保護された文字列"
+		},
+		"wjq_test_fun_linkservice_functionKey": {
+			"type": "secureString",
+			"metadata": "'wjq_test_fun_linkservice' の 'functionKey' のセキュリティで保護された文字列"
+		},
+		"wjq_test_serviceNow_password": {
+			"type": "secureString",
+			"metadata": "'wjq_test_serviceNow' の 'password' のセキュリティで保護された文字列"
+		},
+		"wjq_test_sftp_link_service_password": {
+			"type": "secureString",
+			"metadata": "'wjq_test_sftp_link_service' の 'password' のセキュリティで保護された文字列"
+		},
+		"AzureFunction1_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://misfun-test-package.azurewebsites.net"
+		},
+		"SCP_1_ADFLinkedServices_Blob001_Dev_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://20250226datalake.blob.core.windows.net/"
+		},
+		"Sftp_TEST_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "20250312sftp.blob.core.windows.net"
+		},
+		"Sftp_TEST_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "20250312sftp.azuresftp"
+		},
+		"mis_azure_key_vault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://mis-key-value.vault.azure.net/"
+		},
+		"mis_link_service_20250109_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://20250219mis.blob.core.windows.net/"
+		},
+		"mis_link_service_20250219_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://20250219mis.blob.core.windows.net/"
+		},
+		"wj_test_linkservice_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://20250110mis.blob.core.windows.net/"
+		},
+		"wjq_test_fun_linkservice_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://misfun3.azurewebsites.net"
+		},
+		"wjq_test_serviceNow_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "@{linkedService().sn_user_name}"
+		},
+		"wjq_test_serviceNow_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "@{linkedService().sn_user_name}"
+		},
+		"wjq_test_sftp_link_service_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "123"
+		},
+		"wjq_test_sftp_link_service_properties_typeProperties_hostKeyFingerprint": {
+			"type": "string",
+			"defaultValue": "123"
+		},
+		"wjq_test_sftp_link_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "123"
+		},
+		"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"SBTIMP0024-pipeline02-trigger01_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"dataflow_file_triiger_properties_dataflow_file_triiger_parameters_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"dataflow_file_triiger_properties_dataflow_file_triiger_parameters_filename": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"dataflow_file_triiger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250226datalake"
+		},
+		"fix_from_storeage_trigger_properties_FIX_FROM_STOREGY_2_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"fix_from_storeage_trigger_properties_FIX_FROM_STOREGY_2_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"fix_from_storeage_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"storeagy_delete_by_metadata_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"test_webhook_url_trigger_properties_pipeline16_parameters_filename": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"test_webhook_url_trigger_properties_pipeline16_parameters_foldpath": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"test_webhook_url_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"to_storage_trigger_properties_FIX_TO_STOREGY_01_parameters_core_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"to_storage_trigger_properties_FIX_TO_STOREGY_01_parameters_core_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"to_storage_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"to_storeage_trigger_sup_properties_FIX_TO_STOREGY_02_1-1_parameters_core_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"to_storeage_trigger_sup_properties_FIX_TO_STOREGY_02_1-1_parameters_core_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"to_storeage_trigger_sup_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"to_trigger_storeage_new_properties_FIX_TO_STOREGY_02_1-2_parameters_core_dir": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.folderPath"
+		},
+		"to_trigger_storeage_new_properties_FIX_TO_STOREGY_02_1-2_parameters_core_file_name": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.body.filename"
+		},
+		"to_trigger_storeage_new_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"trigger3_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"trigger4_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/MIS_TEST/providers/Microsoft.Storage/storageAccounts/storageaccountimp2"
+		},
+		"triggerSFTP_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"trigger_sftp_delete2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"trigger_to_storage_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"trigger_to_storage_2_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "リンクされた ARM テンプレートを含むストレージ アカウントの URI"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "リンクされた ARM テンプレートを格納するストレージ アカウントへの SAS トークン"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "MISTEST_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureFunction1_functionKey": {
+						"value": "[parameters('AzureFunction1_functionKey')]"
+					},
+					"Sftp_TEST_password": {
+						"value": "[parameters('Sftp_TEST_password')]"
+					},
+					"mis_link_service_20250312_connectionString": {
+						"value": "[parameters('mis_link_service_20250312_connectionString')]"
+					},
+					"mis_link_service_20250422_connectionString": {
+						"value": "[parameters('mis_link_service_20250422_connectionString')]"
+					},
+					"nrtutest9ce5_link_service_connectionString": {
+						"value": "[parameters('nrtutest9ce5_link_service_connectionString')]"
+					},
+					"nrtutestb8ff_link_service_connectionString": {
+						"value": "[parameters('nrtutestb8ff_link_service_connectionString')]"
+					},
+					"AzureFunction1_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('AzureFunction1_properties_typeProperties_functionAppUrl')]"
+					},
+					"SCP_1_ADFLinkedServices_Blob001_Dev_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('SCP_1_ADFLinkedServices_Blob001_Dev_properties_typeProperties_serviceEndpoint')]"
+					},
+					"Sftp_TEST_properties_typeProperties_host": {
+						"value": "[parameters('Sftp_TEST_properties_typeProperties_host')]"
+					},
+					"Sftp_TEST_properties_typeProperties_userName": {
+						"value": "[parameters('Sftp_TEST_properties_typeProperties_userName')]"
+					},
+					"mis_azure_key_vault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('mis_azure_key_vault_properties_typeProperties_baseUrl')]"
+					},
+					"mis_link_service_20250109_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('mis_link_service_20250109_properties_typeProperties_serviceEndpoint')]"
+					},
+					"mis_link_service_20250219_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('mis_link_service_20250219_properties_typeProperties_serviceEndpoint')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "MISTEST_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"wjq_test_fun_linkservice_functionKey": {
+						"value": "[parameters('wjq_test_fun_linkservice_functionKey')]"
+					},
+					"wjq_test_serviceNow_password": {
+						"value": "[parameters('wjq_test_serviceNow_password')]"
+					},
+					"wjq_test_sftp_link_service_password": {
+						"value": "[parameters('wjq_test_sftp_link_service_password')]"
+					},
+					"wj_test_linkservice_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('wj_test_linkservice_properties_typeProperties_serviceEndpoint')]"
+					},
+					"wjq_test_fun_linkservice_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('wjq_test_fun_linkservice_properties_typeProperties_functionAppUrl')]"
+					},
+					"wjq_test_serviceNow_properties_typeProperties_endpoint": {
+						"value": "[parameters('wjq_test_serviceNow_properties_typeProperties_endpoint')]"
+					},
+					"wjq_test_serviceNow_properties_typeProperties_username": {
+						"value": "[parameters('wjq_test_serviceNow_properties_typeProperties_username')]"
+					},
+					"wjq_test_sftp_link_service_properties_typeProperties_host": {
+						"value": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_host')]"
+					},
+					"wjq_test_sftp_link_service_properties_typeProperties_hostKeyFingerprint": {
+						"value": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_hostKeyFingerprint')]"
+					},
+					"wjq_test_sftp_link_service_properties_typeProperties_userName": {
+						"value": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "MISTEST_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "MISTEST_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "MISTEST_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"test_webhook_url_trigger_properties_pipeline16_parameters_filename": {
+						"value": "[parameters('test_webhook_url_trigger_properties_pipeline16_parameters_filename')]"
+					},
+					"test_webhook_url_trigger_properties_pipeline16_parameters_foldpath": {
+						"value": "[parameters('test_webhook_url_trigger_properties_pipeline16_parameters_foldpath')]"
+					},
+					"test_webhook_url_trigger_properties_typeProperties_scope": {
+						"value": "[parameters('test_webhook_url_trigger_properties_typeProperties_scope')]"
+					},
+					"trigger_sftp_delete2_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_sftp_delete2_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "MISTEST_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_4')]"
+			]
+		},
+		{
+			"name": "MISTEST_ArmTemplate_6",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_6.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"dataflow_file_triiger_properties_dataflow_file_triiger_parameters_dir": {
+						"value": "[parameters('dataflow_file_triiger_properties_dataflow_file_triiger_parameters_dir')]"
+					},
+					"dataflow_file_triiger_properties_dataflow_file_triiger_parameters_filename": {
+						"value": "[parameters('dataflow_file_triiger_properties_dataflow_file_triiger_parameters_filename')]"
+					},
+					"dataflow_file_triiger_properties_typeProperties_scope": {
+						"value": "[parameters('dataflow_file_triiger_properties_typeProperties_scope')]"
+					},
+					"fix_from_storeage_trigger_properties_FIX_FROM_STOREGY_2_parameters_tmp_dir": {
+						"value": "[parameters('fix_from_storeage_trigger_properties_FIX_FROM_STOREGY_2_parameters_tmp_dir')]"
+					},
+					"fix_from_storeage_trigger_properties_FIX_FROM_STOREGY_2_parameters_tmp_file_name": {
+						"value": "[parameters('fix_from_storeage_trigger_properties_FIX_FROM_STOREGY_2_parameters_tmp_file_name')]"
+					},
+					"fix_from_storeage_trigger_properties_typeProperties_scope": {
+						"value": "[parameters('fix_from_storeage_trigger_properties_typeProperties_scope')]"
+					},
+					"to_storage_trigger_properties_FIX_TO_STOREGY_01_parameters_core_dir": {
+						"value": "[parameters('to_storage_trigger_properties_FIX_TO_STOREGY_01_parameters_core_dir')]"
+					},
+					"to_storage_trigger_properties_FIX_TO_STOREGY_01_parameters_core_file_name": {
+						"value": "[parameters('to_storage_trigger_properties_FIX_TO_STOREGY_01_parameters_core_file_name')]"
+					},
+					"to_storage_trigger_properties_typeProperties_scope": {
+						"value": "[parameters('to_storage_trigger_properties_typeProperties_scope')]"
+					},
+					"to_storeage_trigger_sup_properties_FIX_TO_STOREGY_02_1-1_parameters_core_dir": {
+						"value": "[parameters('to_storeage_trigger_sup_properties_FIX_TO_STOREGY_02_1-1_parameters_core_dir')]"
+					},
+					"to_storeage_trigger_sup_properties_FIX_TO_STOREGY_02_1-1_parameters_core_file_name": {
+						"value": "[parameters('to_storeage_trigger_sup_properties_FIX_TO_STOREGY_02_1-1_parameters_core_file_name')]"
+					},
+					"to_storeage_trigger_sup_properties_typeProperties_scope": {
+						"value": "[parameters('to_storeage_trigger_sup_properties_typeProperties_scope')]"
+					},
+					"to_trigger_storeage_new_properties_FIX_TO_STOREGY_02_1-2_parameters_core_dir": {
+						"value": "[parameters('to_trigger_storeage_new_properties_FIX_TO_STOREGY_02_1-2_parameters_core_dir')]"
+					},
+					"to_trigger_storeage_new_properties_FIX_TO_STOREGY_02_1-2_parameters_core_file_name": {
+						"value": "[parameters('to_trigger_storeage_new_properties_FIX_TO_STOREGY_02_1-2_parameters_core_file_name')]"
+					},
+					"to_trigger_storeage_new_properties_typeProperties_scope": {
+						"value": "[parameters('to_trigger_storeage_new_properties_typeProperties_scope')]"
+					},
+					"trigger3_properties_typeProperties_scope": {
+						"value": "[parameters('trigger3_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_5')]"
+			]
+		},
+		{
+			"name": "MISTEST_ArmTemplate_7",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_7.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"trigger4_properties_typeProperties_scope": {
+						"value": "[parameters('trigger4_properties_typeProperties_scope')]"
+					},
+					"triggerSFTP_properties_typeProperties_scope": {
+						"value": "[parameters('triggerSFTP_properties_typeProperties_scope')]"
+					},
+					"trigger_to_storage_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_to_storage_properties_typeProperties_scope')]"
+					},
+					"trigger_to_storage_2_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_to_storage_2_properties_typeProperties_scope')]"
+					},
+					"SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_dir": {
+						"value": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_dir')]"
+					},
+					"SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_file_name": {
+						"value": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_SBTIMP0025-pipeline02_parameters_tmp_file_name')]"
+					},
+					"SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope": {
+						"value": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope')]"
+					},
+					"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
+						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir')]"
+					},
+					"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
+						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name')]"
+					},
+					"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
+						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir')]"
+					},
+					"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
+						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container')]"
+					},
+					"storeagy_delete_by_metadata_properties_typeProperties_scope": {
+						"value": "[parameters('storeagy_delete_by_metadata_properties_typeProperties_scope')]"
+					},
+					"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir": {
+						"value": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir')]"
+					},
+					"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_file_name": {
+						"value": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_file_name')]"
+					},
+					"SBTIMP0024-pipeline02-trigger01_properties_typeProperties_scope": {
+						"value": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'MISTEST_ArmTemplate_6')]"
+			]
+		}
+	]
+}
