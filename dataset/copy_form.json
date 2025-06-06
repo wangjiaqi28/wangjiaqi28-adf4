@@ -16,10 +16,9 @@
 			},
 			"columnDelimiter": ",",
 			"rowDelimiter": "\n",
-			"encodingName": "SHIFT-JIS",
-			"escapeChar": "",
+			"escapeChar": "\"",
 			"firstRowAsHeader": false,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	},
