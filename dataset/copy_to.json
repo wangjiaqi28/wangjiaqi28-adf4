@@ -10,8 +10,9 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "wk/CXFT008101",
-				"container": "miraicontainer01"
+				"fileName": "out.csv",
+				"folderPath": "test",
+				"container": "input"
 			},
 			"columnDelimiter": ",",
 			"encodingName": "SHIFT-JIS",

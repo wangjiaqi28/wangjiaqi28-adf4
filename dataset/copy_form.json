@@ -10,38 +10,18 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "CXFT008101",
-				"folderPath": "tmp/CXFT008101",
-				"container": "miraicontainer01"
+				"fileName": "CXFT008101_SC20250520-122122.csv",
+				"folderPath": "test",
+				"container": "input"
 			},
-			"columnDelimiter": "\u0001",
+			"columnDelimiter": ",",
+			"rowDelimiter": "\n",
 			"encodingName": "SHIFT-JIS",
 			"escapeChar": "",
 			"firstRowAsHeader": false,
 			"quoteChar": ""
 		},
-		"schema": [
-			{
-				"name": "列1",
-				"type": "String"
-			},
-			{
-				"name": "列2",
-				"type": "String"
-			},
-			{
-				"name": "列3",
-				"type": "String"
-			},
-			{
-				"name": "列4",
-				"type": "String"
-			},
-			{
-				"name": "列5",
-				"type": "String"
-			}
-		]
+		"schema": []
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }
