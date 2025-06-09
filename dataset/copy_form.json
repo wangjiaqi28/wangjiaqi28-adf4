@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "CXFT008101_SC20250520-122122.csv",
+				"fileName": "0609_test.csv",
 				"folderPath": "test",
 				"container": "input"
 			},
