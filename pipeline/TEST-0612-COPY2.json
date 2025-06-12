@@ -1,5 +1,5 @@
 {
-	"name": "TEST-0612-COPY",
+	"name": "TEST-0612-COPY2",
 	"properties": {
 		"activities": [
 			{
@@ -20,7 +20,7 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": "test2",
+							"wildcardFolderPath": "test",
 							"wildcardFileName": "*",
 							"enablePartitionDiscovery": false
 						},
