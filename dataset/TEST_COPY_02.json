@@ -1,5 +1,5 @@
 {
-	"name": "TEST_COPY_01",
+	"name": "TEST_COPY_02",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mis_link_service_20250109",
@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"folderPath": "test",
-				"container": "input"
+				"container": "output"
 			}
 		}
 	}

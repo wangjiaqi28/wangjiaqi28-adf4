@@ -16,16 +16,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "BinarySource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": "test",
-							"wildcardFileName": "*",
-							"enablePartitionDiscovery": false
+							"recursive": true
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "BinaryReadSettings"
 						}
 					},
 					"sink": {
@@ -38,13 +35,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "copy_form",
+						"referenceName": "TEST_COPY_01",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "TEST_COPY_01",
+						"referenceName": "TEST_COPY_02",
 						"type": "DatasetReference"
 					}
 				]
