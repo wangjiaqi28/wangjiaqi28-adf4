@@ -14,16 +14,6 @@
 					"tmp_dir": "@trigger().outputs.body.folderPath",
 					"tmp_file_name": "@trigger().outputs.body.filename"
 				}
-			},
-			{
-				"pipelineReference": {
-					"referenceName": "FIX_DELETE_02",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"del_file_dir": "@trigger().outputs.body.folderPath",
-					"container": "@trigger().outputs.body.filename"
-				}
 			}
 		],
 		"type": "BlobEventsTrigger",
