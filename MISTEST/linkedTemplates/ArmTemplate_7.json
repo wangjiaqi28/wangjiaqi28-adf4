@@ -7,10 +7,6 @@
 			"metadata": "データ ファクトリ名",
 			"defaultValue": "MISTEST"
 		},
-		"trigger4_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/MIS_TEST/providers/Microsoft.Storage/storageAccounts/storageaccountimp2"
-		},
 		"triggerSFTP_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
@@ -35,26 +31,6 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
 		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.folderPath"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.filename"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.folderPath"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.filename"
-		},
-		"storeagy_delete_by_metadata_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
-		},
 		"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.body.folderPath"
@@ -72,34 +48,6 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/trigger4')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "pipeline3",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/input/blobs/test/aa/",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('trigger4_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
-				}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/triggerSFTP')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
@@ -477,49 +425,6 @@
 					"scope": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope')]",
 					"events": [
 						"Microsoft.Storage.BlobCreated"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/storeagy_delete_by_metadata')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ファイル削除パイプライン起動のための削除トリガー",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "FIX_DELETE_01",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"tmp_dir": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir')]",
-							"tmp_file_name": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name')]"
-						}
-					},
-					{
-						"pipelineReference": {
-							"referenceName": "FIX_DELETE_02",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"del_file_dir": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir')]",
-							"container": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container')]"
-						}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/input/blobs/",
-					"blobPathEndsWith": "tmp/*",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('storeagy_delete_by_metadata_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobDeleted"
 					]
 				}
 			},

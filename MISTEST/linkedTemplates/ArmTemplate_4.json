@@ -29,6 +29,65 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/test_data_copy_01')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250422",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"file_quote_char": {
+						"type": "string"
+					},
+					"file_encoding": {
+						"type": "string"
+					},
+					"file_escape_char": {
+						"type": "string"
+					},
+					"null_value": {
+						"type": "string"
+					},
+					"file_first_row_header": {
+						"type": "bool"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "miraicontainer01"
+					},
+					"columnDelimiter": "\u0001",
+					"encodingName": {
+						"value": "@dataset().file_encoding",
+						"type": "Expression"
+					},
+					"escapeChar": {
+						"value": "@dataset().file_escape_char",
+						"type": "Expression"
+					},
+					"firstRowAsHeader": {
+						"value": "@dataset().file_first_row_header",
+						"type": "Expression"
+					},
+					"nullValue": {
+						"value": "@dataset().null_value",
+						"type": "Expression"
+					},
+					"quoteChar": {
+						"value": "@dataset().file_quote_char",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/test_data_copy_02')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -103,7 +162,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "CXFT008101_WK.csv",
+						"fileName": "test.csv",
 						"folderPath": "core/CXFT008101",
 						"container": "miraicontainer01"
 					},
@@ -130,7 +189,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "core/CXFT008101",
+						"folderPath": "sup/CXFT008101",
 						"container": "miraicontainer01"
 					},
 					"columnDelimiter": ",",
@@ -621,179 +680,6 @@
 						"Microsoft.Storage.BlobDeleted"
 					]
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FIX_DELETE_02')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Lookup1",
-						"description": "削除情報ファイルの中身を読み込み",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 1,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "copy_form",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1",
-						"description": "アイテムNo1で取得した削除対象ファイルリストをループする",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Lookup1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup1').output.value",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "If Condition1",
-									"description": "下記条件に満たす場合True,それ以外の場合False\n・削除対象ファイルが取込側ストレジアカウントに保存されている場合",
-									"type": "IfCondition",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@equals(substring(item().Prop_0, 0, 4), 'imp:')",
-											"type": "Expression"
-										},
-										"ifFalseActivities": [
-											{
-												"name": "DeleteSup",
-												"description": "提供側ストレジアカウント配下のファイルを削除するアクティビティ",
-												"type": "Delete",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 1,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"dataset": {
-														"referenceName": "delete_sup_storegy_by_delete_data_set",
-														"type": "DatasetReference",
-														"parameters": {
-															"container": {
-																"value": "@substring(item().Prop_0, 4, sub(indexOf(item().Prop_0, '/'),4))",
-																"type": "Expression"
-															},
-															"dir": {
-																"value": "@substring(item().Prop_0, add(indexOf(item().Prop_0, '/'),1), sub(sub(lastIndexOf(item().Prop_0, '/'),indexOf(item().Prop_0, '/')),1))",
-																"type": "Expression"
-															},
-															"file_name": {
-																"value": "@substring(item().Prop_0, add(lastIndexOf(item().Prop_0, '/'),1), sub(sub(length(item().Prop_0),lastIndexOf(item().Prop_0, '/')),1))",
-																"type": "Expression"
-															}
-														}
-													},
-													"enableLogging": false,
-													"storeSettings": {
-														"type": "AzureBlobStorageReadSettings",
-														"recursive": true,
-														"enablePartitionDiscovery": false
-													}
-												}
-											}
-										],
-										"ifTrueActivities": [
-											{
-												"name": "DeleteImp",
-												"description": "取込側ストレジアカウント配下のファイルを削除するアクティビティ",
-												"type": "Delete",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 1,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"dataset": {
-														"referenceName": "delete_core_storegy_by_delete_data_set",
-														"type": "DatasetReference",
-														"parameters": {
-															"container": {
-																"value": "@substring(item().Prop_0, 4, sub(indexOf(item().Prop_0, '/'),4))",
-																"type": "Expression"
-															},
-															"dir": "@substring(item().Prop_0, add(indexOf(item().Prop_0, '/'),1), sub(sub(lastIndexOf(item().Prop_0, '/'),indexOf(item().Prop_0, '/')),1))",
-															"file_name": "@substring(item().Prop_0, add(lastIndexOf(item().Prop_0, '/'),1), sub(sub(length(item().Prop_0),lastIndexOf(item().Prop_0, '/')),1))"
-														}
-													},
-													"enableLogging": false,
-													"storeSettings": {
-														"type": "AzureBlobStorageReadSettings",
-														"recursive": true,
-														"enablePartitionDiscovery": false
-													}
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"del_file_dir": {
-						"type": "string"
-					},
-					"container": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "SAMPLE"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-02-27T02:48:08Z"
 			},
 			"dependsOn": []
 		},

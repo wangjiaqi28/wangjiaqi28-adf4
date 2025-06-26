@@ -46,6 +46,10 @@
 		"wjq_test_sftp_link_service_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "123"
+		},
+		"storeagy_delete_by_metadata_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
 		}
 	},
 	"variables": {
@@ -138,6 +142,28 @@
 						"type": "SecureString",
 						"value": "[parameters('wjq_test_sftp_link_service_password')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storeagy_delete_by_metadata')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ファイル削除パイプライン起動のための削除トリガー",
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/",
+					"blobPathEndsWith": "tmp/*",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('storeagy_delete_by_metadata_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobDeleted"
+					]
 				}
 			},
 			"dependsOn": []
@@ -1115,43 +1141,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline9')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Azure Function1",
-						"type": "AzureFunctionActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"functionName": "http_trigger_test_connection",
-							"headers": {},
-							"method": "GET"
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureFunction1",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-04-11T09:27:27Z"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/sample_test1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1212,48 +1201,6 @@
 				"lastPublishTime": "2025-05-12T06:17:19Z"
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/wjq_fun_test')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Azure Function1",
-						"type": "AzureFunctionActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"functionName": "http_trigger_test_connection",
-							"headers": {},
-							"method": "GET"
-						},
-						"linkedServiceName": {
-							"referenceName": "wjq_test_fun_linkservice",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "SAMPLE"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-17T08:22:50Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/wjq_test_fun_linkservice')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Binary1')]",
@@ -1443,6 +1390,82 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/wjq_test_sftp_link_service')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTIMP0017_pipeline01_dataset02')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mis_link_service_20250109",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dir": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					},
+					"file_column_delimiter": {
+						"type": "string"
+					},
+					"file_encoding": {
+						"type": "string"
+					},
+					"file_quote_char": {
+						"type": "string"
+					},
+					"file_escape_char": {
+						"type": "string"
+					},
+					"file_first_row_header": {
+						"type": "string"
+					},
+					"null_value": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().dir",
+							"type": "Expression"
+						},
+						"container": "input"
+					},
+					"columnDelimiter": {
+						"value": "@dataset().file_column_delimiter",
+						"type": "Expression"
+					},
+					"encodingName": {
+						"value": "@dataset().file_encoding",
+						"type": "Expression"
+					},
+					"escapeChar": {
+						"value": "@dataset().file_escape_char",
+						"type": "Expression"
+					},
+					"firstRowAsHeader": true,
+					"nullValue": {
+						"value": "@dataset().null_value",
+						"type": "Expression"
+					},
+					"quoteChar": {
+						"value": "@dataset().file_quote_char",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
 		}
 	]
 }

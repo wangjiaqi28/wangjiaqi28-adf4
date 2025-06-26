@@ -70,6 +70,10 @@
 		"trigger3_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250312sftp"
+		},
+		"trigger4_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/MIS_TEST/providers/Microsoft.Storage/storageAccounts/storageaccountimp2"
 		}
 	},
 	"variables": {
@@ -279,15 +283,13 @@
 					"scriptLines": [
 						"source(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     purgeFiles: true) ~> source1",
+						"     ignoreNoFilesFound: false) ~> source1",
 						"source1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     partitionFileNames:['aaa.csv'],",
+						"     partitionFileNames:['test.csv'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     quoteAll: true,",
-						"     header: (array(concat(\"PARTNR\",\",SPRAS\",\",ZAEPAANA\",\",ZAEPAAKNA\",\",ZAEPAANA\",\",ZAEPANA1\",\",ZAEPANA2\",\",ZAEPANA1\"))),",
 						"     partitionBy('hash', 1)) ~> sink1"
 					]
 				}
@@ -662,110 +664,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FIX_DELETE_01')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "ファイル削除パイプライン",
-				"activities": [
-					{
-						"name": "GetDeleteFileMessage",
-						"description": "削除情報ファイルのメタデータに設定されている一時ファイル名を取得",
-						"type": "WebActivity",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 1,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"method": "GET",
-							"headers": {
-								"x-ms-version": "2024-11-04"
-							},
-							"url": {
-								"value": "@concat('https://20250110mis.blob.core.windows.net/',pipeline().parameters.tmp_dir,'_DEL/DEL_INFO','?comp=metadata')",
-								"type": "Expression"
-							},
-							"authentication": {
-								"type": "MSI",
-								"resource": "https://storage.azure.com/"
-							}
-						}
-					},
-					{
-						"name": "IfConditionDeleteFileExist",
-						"description": "下記条件に満たす場合True,それ以外の場合False\n・削除対象の一時ファイル名と削除情報ファイルのメタデータに設定している一時ファイル名が一致する場合",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "GetDeleteFileMessage",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(pipeline().parameters.tmp_file_name, activity('GetDeleteFileMessage').output.ADFWebActivityResponseHeaders['x-ms-meta-tmp'])",
-								"type": "Expression"
-							},
-							"ifTrueActivities": [
-								{
-									"name": "Execute Pipeline1",
-									"description": "ファイル削除パイプラインを呼び出し",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "FIX_DELETE_02",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"del_file_dir": {
-												"value": "@concat(substring(pipeline().parameters.tmp_dir,add(indexOf(pipeline().parameters.tmp_dir, '/'),1),sub(sub(length(pipeline().parameters.tmp_dir),indexOf(pipeline().parameters.tmp_dir, '/')),1)),'_DEL')",
-												"type": "Expression"
-											},
-											"container": {
-												"value": "@substring(pipeline().parameters.tmp_dir, 0, indexOf(pipeline().parameters.tmp_dir, '/'))",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"tmp_dir": {
-						"type": "string"
-					},
-					"tmp_file_name": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "SAMPLE"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-02-27T02:48:08Z"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Pipeline-test1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -805,12 +703,6 @@
 				"policy": {
 					"elapsedTimeMetric": {
 						"duration": "0.01:00:00"
-					}
-				},
-				"variables": {
-					"core_file_name": {
-						"type": "String",
-						"defaultValue": "dataflow_output.csv"
 					}
 				},
 				"annotations": [],
@@ -4021,6 +3913,34 @@
 					"blobPathBeginsWith": "/input/blobs/core/testAAA",
 					"ignoreEmptyBlobs": true,
 					"scope": "[parameters('trigger3_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger4')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline3",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/input/blobs/test/aa/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger4_properties_typeProperties_scope')]",
 					"events": [
 						"Microsoft.Storage.BlobCreated"
 					]

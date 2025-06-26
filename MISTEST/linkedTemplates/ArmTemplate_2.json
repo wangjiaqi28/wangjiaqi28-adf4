@@ -13,82 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/SBTIMP0017_pipeline01_dataset02')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mis_link_service_20250109",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"dir": {
-						"type": "string"
-					},
-					"file_name": {
-						"type": "string"
-					},
-					"file_column_delimiter": {
-						"type": "string"
-					},
-					"file_encoding": {
-						"type": "string"
-					},
-					"file_quote_char": {
-						"type": "string"
-					},
-					"file_escape_char": {
-						"type": "string"
-					},
-					"file_first_row_header": {
-						"type": "string"
-					},
-					"null_value": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().file_name",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().dir",
-							"type": "Expression"
-						},
-						"container": "input"
-					},
-					"columnDelimiter": {
-						"value": "@dataset().file_column_delimiter",
-						"type": "Expression"
-					},
-					"encodingName": {
-						"value": "@dataset().file_encoding",
-						"type": "Expression"
-					},
-					"escapeChar": {
-						"value": "@dataset().file_escape_char",
-						"type": "Expression"
-					},
-					"firstRowAsHeader": true,
-					"nullValue": {
-						"value": "@dataset().null_value",
-						"type": "Expression"
-					},
-					"quoteChar": {
-						"value": "@dataset().file_quote_char",
-						"type": "Expression"
-					}
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/SBTIMP0017_pipeline02_dataset01')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2230,6 +2154,48 @@
 					"columnDelimiter": ",",
 					"escapeChar": "\"",
 					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SBTSUP0025_pipeline02_dataset02')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SCP_1_ADFLinkedServices_Blob001_Dev",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"dir": {
+						"type": "string"
+					},
+					"file_first_row_header": {
+						"type": "bool"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "1.csv",
+						"folderPath": {
+							"value": "@dataset().dir",
+							"type": "Expression"
+						},
+						"container": "mbkcorecontainer01"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"escapeChar": "\"",
+					"firstRowAsHeader": {
+						"value": "@dataset().file_first_row_header",
+						"type": "Expression"
+					},
 					"quoteChar": "\""
 				},
 				"schema": []

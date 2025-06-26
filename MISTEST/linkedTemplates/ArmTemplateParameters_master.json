@@ -110,18 +110,6 @@
 		"fix_from_storeage_trigger_properties_typeProperties_scope": {
 			"value": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
 		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
-			"value": "@trigger().outputs.body.folderPath"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
-			"value": "@trigger().outputs.body.filename"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
-			"value": "@trigger().outputs.body.folderPath"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
-			"value": "@trigger().outputs.body.filename"
-		},
 		"storeagy_delete_by_metadata_properties_typeProperties_scope": {
 			"value": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
 		},

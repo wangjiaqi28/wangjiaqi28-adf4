@@ -147,22 +147,6 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
 		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.folderPath"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.filename"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.folderPath"
-		},
-		"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
-			"type": "string",
-			"defaultValue": "@trigger().outputs.body.filename"
-		},
 		"storeagy_delete_by_metadata_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/ad1ca85f-99fd-4bfc-838b-9466bfcbebee/resourceGroups/NRTU_TEST/providers/Microsoft.Storage/storageAccounts/20250219mis"
@@ -352,6 +336,9 @@
 					},
 					"wjq_test_sftp_link_service_properties_typeProperties_userName": {
 						"value": "[parameters('wjq_test_sftp_link_service_properties_typeProperties_userName')]"
+					},
+					"storeagy_delete_by_metadata_properties_typeProperties_scope": {
+						"value": "[parameters('storeagy_delete_by_metadata_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -512,6 +499,9 @@
 					},
 					"trigger3_properties_typeProperties_scope": {
 						"value": "[parameters('trigger3_properties_typeProperties_scope')]"
+					},
+					"trigger4_properties_typeProperties_scope": {
+						"value": "[parameters('trigger4_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -533,9 +523,6 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"trigger4_properties_typeProperties_scope": {
-						"value": "[parameters('trigger4_properties_typeProperties_scope')]"
-					},
 					"triggerSFTP_properties_typeProperties_scope": {
 						"value": "[parameters('triggerSFTP_properties_typeProperties_scope')]"
 					},
@@ -553,21 +540,6 @@
 					},
 					"SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope": {
 						"value": "[parameters('SBTIMP0025-pipeline02-trigger01_properties_typeProperties_scope')]"
-					},
-					"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir": {
-						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_dir')]"
-					},
-					"storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name": {
-						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_01_parameters_tmp_file_name')]"
-					},
-					"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir": {
-						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_del_file_dir')]"
-					},
-					"storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container": {
-						"value": "[parameters('storeagy_delete_by_metadata_properties_FIX_DELETE_02_parameters_container')]"
-					},
-					"storeagy_delete_by_metadata_properties_typeProperties_scope": {
-						"value": "[parameters('storeagy_delete_by_metadata_properties_typeProperties_scope')]"
 					},
 					"SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir": {
 						"value": "[parameters('SBTIMP0024-pipeline02-trigger01_properties_SBTIMP0024-pipeline02_parameters_tmp_dir')]"
