@@ -4,18 +4,7 @@
 		"description": "ファイル削除パイプライン起動のための削除トリガー",
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "FIX_DELETE_01",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"tmp_dir": "@trigger().outputs.body.folderPath",
-					"tmp_file_name": "@trigger().outputs.body.filename"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
 			"blobPathBeginsWith": "/input/blobs/",
