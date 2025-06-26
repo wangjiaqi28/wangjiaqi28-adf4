@@ -29,11 +29,10 @@
 				"     purgeFiles: true) ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['aaa.csv'],",
+				"     partitionFileNames:['test.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     quoteAll: true,",
-				"     header: (array(concat(\"PARTNR\",\",SPRAS\",\",ZAEPAANA\",\",ZAEPAAKNA\",\",ZAEPAANA\",\",ZAEPANA1\",\",ZAEPANA2\",\",ZAEPANA1\"))),",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}

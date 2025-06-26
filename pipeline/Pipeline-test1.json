@@ -32,12 +32,6 @@
 				"duration": "0.01:00:00"
 			}
 		},
-		"variables": {
-			"core_file_name": {
-				"type": "String",
-				"defaultValue": "dataflow_output.csv"
-			}
-		},
 		"annotations": [],
 		"lastPublishTime": "2025-05-15T05:33:37Z"
 	},

@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "core/CXFT008101",
+				"folderPath": "sup/CXFT008101",
 				"container": "miraicontainer01"
 			},
 			"columnDelimiter": ",",

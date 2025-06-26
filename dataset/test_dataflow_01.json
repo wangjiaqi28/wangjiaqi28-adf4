@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "CXFT008101_WK.csv",
+				"fileName": "test.csv",
 				"folderPath": "core/CXFT008101",
 				"container": "miraicontainer01"
 			},
