@@ -16,8 +16,8 @@
 			},
 			"columnDelimiter": ",",
 			"encodingName": "SHIFT-JIS",
-			"escapeChar": "\"",
-			"quoteChar": "\""
+			"escapeChar": "",
+			"quoteChar": ""
 		},
 		"schema": []
 	},
