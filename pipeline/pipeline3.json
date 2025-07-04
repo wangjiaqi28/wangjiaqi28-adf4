@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Delete1",
-				"type": "Delete",
+				"name": "Copy data1",
+				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -15,41 +15,50 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataset": {
-						"referenceName": "delete_Binary",
-						"type": "DatasetReference"
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
-				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
+				},
+				"inputs": [
 					{
-						"activity": "Delete1",
-						"dependencyConditions": [
-							"Failed"
-						]
+						"referenceName": "copy_form",
+						"type": "DatasetReference"
 					}
 				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "aa",
-					"value": {
-						"value": "@string(activity('Delete1').error.message)",
-						"type": "Expression"
+				"outputs": [
+					{
+						"referenceName": "copy_to",
+						"type": "DatasetReference"
 					}
-				}
+				]
 			}
 		],
 		"variables": {
