@@ -4,32 +4,32 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "データ ファクトリ名",
+			"metadata": "数据工厂名称",
 			"defaultValue": "MISTEST"
 		},
 		"AzureFunction1_functionKey": {
 			"type": "secureString",
-			"metadata": "'AzureFunction1' の 'functionKey' のセキュリティで保護された文字列"
+			"metadata": "“AzureFunction1”的“functionKey”的安全字符串"
 		},
 		"Sftp_TEST_password": {
 			"type": "secureString",
-			"metadata": "'Sftp_TEST' の 'password' のセキュリティで保護された文字列"
+			"metadata": "“Sftp_TEST”的“password”的安全字符串"
 		},
 		"mis_link_service_20250312_connectionString": {
 			"type": "secureString",
-			"metadata": "'mis_link_service_20250312' の 'connectionString' のセキュリティで保護された文字列"
+			"metadata": "“mis_link_service_20250312”的“connectionString”的安全字符串"
 		},
 		"mis_link_service_20250422_connectionString": {
 			"type": "secureString",
-			"metadata": "'mis_link_service_20250422' の 'connectionString' のセキュリティで保護された文字列"
+			"metadata": "“mis_link_service_20250422”的“connectionString”的安全字符串"
 		},
 		"nrtutest9ce5_link_service_connectionString": {
 			"type": "secureString",
-			"metadata": "'nrtutest9ce5_link_service' の 'connectionString' のセキュリティで保護された文字列"
+			"metadata": "“nrtutest9ce5_link_service”的“connectionString”的安全字符串"
 		},
 		"nrtutestb8ff_link_service_connectionString": {
 			"type": "secureString",
-			"metadata": "'nrtutestb8ff_link_service' の 'connectionString' のセキュリティで保護された文字列"
+			"metadata": "“nrtutestb8ff_link_service”的“connectionString”的安全字符串"
 		},
 		"AzureFunction1_properties_typeProperties_functionAppUrl": {
 			"type": "string",

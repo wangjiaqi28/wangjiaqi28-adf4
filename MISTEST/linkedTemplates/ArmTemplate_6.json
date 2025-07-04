@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "データ ファクトリ名",
+			"metadata": "数据工厂名称",
 			"defaultValue": "MISTEST"
 		},
 		"dataflow_file_triiger_properties_dataflow_file_triiger_parameters_dir": {

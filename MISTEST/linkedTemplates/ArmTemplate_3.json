@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "データ ファクトリ名",
+			"metadata": "数据工厂名称",
 			"defaultValue": "MISTEST"
 		}
 	},
@@ -68,6 +68,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "TESTA",
+						"folderPath": "test",
 						"container": "input"
 					},
 					"columnDelimiter": ",",

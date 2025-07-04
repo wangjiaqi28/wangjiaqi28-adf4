@@ -4,20 +4,20 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "データ ファクトリ名",
+			"metadata": "数据工厂名称",
 			"defaultValue": "MISTEST"
 		},
 		"wjq_test_fun_linkservice_functionKey": {
 			"type": "secureString",
-			"metadata": "'wjq_test_fun_linkservice' の 'functionKey' のセキュリティで保護された文字列"
+			"metadata": "“wjq_test_fun_linkservice”的“functionKey”的安全字符串"
 		},
 		"wjq_test_serviceNow_password": {
 			"type": "secureString",
-			"metadata": "'wjq_test_serviceNow' の 'password' のセキュリティで保護された文字列"
+			"metadata": "“wjq_test_serviceNow”的“password”的安全字符串"
 		},
 		"wjq_test_sftp_link_service_password": {
 			"type": "secureString",
-			"metadata": "'wjq_test_sftp_link_service' の 'password' のセキュリティで保護された文字列"
+			"metadata": "“wjq_test_sftp_link_service”的“password”的安全字符串"
 		},
 		"wj_test_linkservice_properties_typeProperties_serviceEndpoint": {
 			"type": "string",

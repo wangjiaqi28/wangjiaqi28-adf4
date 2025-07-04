@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "データ ファクトリ名",
+			"metadata": "数据工厂名称",
 			"defaultValue": "MISTEST"
 		},
 		"test_webhook_url_trigger_properties_pipeline16_parameters_filename": {
@@ -168,8 +168,8 @@
 					},
 					"columnDelimiter": ",",
 					"encodingName": "SHIFT-JIS",
-					"escapeChar": "\"",
-					"quoteChar": "\""
+					"escapeChar": "",
+					"quoteChar": ""
 				},
 				"schema": []
 			},
