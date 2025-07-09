@@ -5,32 +5,19 @@
 			"referenceName": "mis_link_service_20250219",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"quote": {
-				"type": "string"
-			},
-			"escape": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "header.csv",
+				"fileName": "TESTA",
+				"folderPath": "test",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
-			"escapeChar": {
-				"value": "@dataset().escape",
-				"type": "Expression"
-			},
+			"escapeChar": "\"",
 			"firstRowAsHeader": false,
-			"quoteChar": {
-				"value": "@dataset().quote",
-				"type": "Expression"
-			}
+			"quoteChar": "\""
 		},
 		"schema": []
 	},

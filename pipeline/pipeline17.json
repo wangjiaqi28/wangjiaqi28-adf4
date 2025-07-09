@@ -17,19 +17,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflow1",
-						"type": "DataFlowReference",
-						"datasetParameters": {
-							"source1": {
-								"quote": {
-									"value": "@pipeline().parameters.quote",
-									"type": "Expression"
-								},
-								"escape": {
-									"value": "@pipeline().parameters.sacape",
-									"type": "Expression"
-								}
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
@@ -39,14 +27,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"quote": {
-				"type": "string"
-			},
-			"sacape": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"lastPublishTime": "2025-05-20T05:51:58Z"
 	},
